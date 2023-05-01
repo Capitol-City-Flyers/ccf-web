@@ -1,0 +1,99 @@
+{
+  "name": "capitol-city-flyers",
+  "version": "1.0.0",
+  "private": true,
+  "description": "capitol-city-flyers",
+  "author": "Matt Jensen",
+  "scripts": {
+    "test": "jest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "axios": "^1.3.4",
+    "daisyui": "^2.51.4",
+    "date-fns": "^2.29.3",
+    "express-http-proxy": "^1.6.3",
+    "immer": "^9.0.19",
+    "lodash": "^4.17.21",
+    "luxon": "^3.3.0",
+    "moo": "^0.5.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.9.0",
+    "suncalc": "^1.9.0"
+  },
+  "devDependencies": {
+    "@babel/preset-react": "^7.18.6",
+    "@babel/preset-typescript": "^7.21.0",
+    "@types/express": "^4.17.17",
+    "@types/express-http-proxy": "^1.6.3",
+    "@types/jest": "^29.5.0",
+    "@types/jszip": "^3.4.1",
+    "@types/lodash": "^4.14.191",
+    "@types/luxon": "^3.3.0",
+    "@types/minimatch": "^5.1.2",
+    "@types/moo": "^0.5.5",
+    "@types/node": "^18.15.0",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@types/react-helmet": "^6.1.6",
+    "@types/request-promise": "^4.1.48",
+    "@types/suncalc": "^1.9.0",
+    "@types/tokenizr": "^1.6.1",
+    "autoprefixer": "^10.4.14",
+    "babel-jest": "^29.5.0",
+    "babel-loader": "^9.1.2",
+    "css-loader": "^6.7.3",
+    "glob": "^9.3.2",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "jest-html-reporters": "^3.1.4",
+    "jest-junit": "^15.0.0",
+    "jsdom": "^21.1.1",
+    "jszip": "^3.10.1",
+    "minimatch": "^9.0.0",
+    "postcss": "^8.4.21",
+    "postcss-loader": "^7.1.0",
+    "postcss-preset-env": "^8.1.0",
+    "style-loader": "^3.3.2",
+    "tailwindcss": "^3.2.7",
+    "tokenizr": "^1.6.9",
+    "ts-jest": "^29.0.5",
+    "typescript": "^4.9.5",
+    "webpack-cli": "^5.0.1",
+    "workbox-webpack-plugin": "^6.5.4"
+  },
+  "jest": {
+    "reporters": [
+      "default",
+      "jest-junit",
+      [
+        "jest-html-reporters",
+        {
+          "filename": "index.html",
+          "publicPath": "./build/reports/tests/webpackTest"
+        }
+      ]
+    ],
+    "testRegex": "/src/test/webpack/.+\\.test\\.[jt]sx?$",
+    "moduleDirectories": [
+      "node_modules",
+      "<rootDir>/src/main/webpack"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "jsx",
+      "ts",
+      "tsx"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    }
+  },
+  "jest-junit": {
+    "outputDirectory": "build/test-results/webpackTest",
+    "usePathForSuiteName": "true"
+  }
+}
