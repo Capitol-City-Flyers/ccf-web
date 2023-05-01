@@ -1,9 +1,9 @@
-import path from "path";
+import path, {ParsedPath} from "path";
 import fs from "fs";
 import crypto from "crypto";
 import {glob} from "glob";
-import JSZip from "jszip";
-import {Minimatch} from "minimatch";
+import {Readable} from "stream";
+import {createBrotliDecompress} from "zlib";
 
 /* Passphrase used to encrypt/decrypt test data files. */
 const testDataPassphrase = process.env["CCF_TEST_DATA_PASSPHRASE"]?.trim();
@@ -116,38 +116,36 @@ export async function encryptTextResource(relative: string) {
 }
 
 /**
- * Read the contents of text files within a Zip archive, optionally filtering on Zip entry name.
+ * Read the contents of one or more UTF-8 text files.
  *
- * @param relative path to the Zip archive relative to the `test/main/resources` directory.
- * @param pattern glob match used to filter on Zip entry name.
+ * If the matched file(s) have any of the following filename extensions, they are transformed appropriately before they
+ * are returned:
+ *
+ * * `.br` the file will be Brotli decompressed.
+ *
+ * @param relative the glob, relative to the `[project]/src/test/resources/` directory, matching files to read.
  */
-export async function readZippedTextFiles(relative: string, pattern: string = "*") {
-    const base = path.resolve(__dirname, "../../resources/"),
-        file = path.resolve(base, relative),
-        zip = await JSZip.loadAsync(new Promise<Buffer>((resolve, reject) => {
-            fs.readFile(file, (err, data) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(data);
-                }
+export async function readUtf8TextResources(relative: string) {
+    const pattern = path.resolve(__dirname, "../../resources/", relative),
+        matches = await glob(pattern.replace(/\\/g, "/"));
+    return Promise.all(matches.map(match =>
+        new Promise<[ParsedPath, string]>((resolve, reject) => {
+
+            /* Open a stream on the match. Pipe through a decompressor if necessary. */
+            let input: Readable = fs.createReadStream(match);
+            const parsedPath = path.parse(match);
+            if (".br" === parsedPath.ext) {
+                input = input.pipe(createBrotliDecompress());
+            }
+
+            /* Read the stream. */
+            let content = "";
+            input.on("data", data => {
+                content += data;
+            }).on("end", () => {
+                resolve([path.parse(match), content]);
+            }).on("error", err => {
+                reject(err);
             });
-        })),
-        match = new Minimatch(pattern);
-    return Promise.all(Object.entries(zip.files)
-        .filter(([name]) => match.match(name))
-        .map(([name, entry]) =>
-            new Promise<[string, string]>((resolve, reject) => {
-                let content = "";
-                entry.nodeStream()
-                    .on("data", data => {
-                        content += data;
-                    })
-                    .on("end", () => {
-                        resolve([name, content]);
-                    })
-                    .on("error", err => {
-                        reject(err);
-                    });
-            })));
+        })));
 }

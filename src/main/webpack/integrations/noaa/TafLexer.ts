@@ -1,5 +1,0 @@
-
-class TafLexer {
-
-    parse()
-}

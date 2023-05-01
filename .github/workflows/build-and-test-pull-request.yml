@@ -1,0 +1,28 @@
+name: Build and test pull request
+on: [pull_request]
+env:
+  CCF_TEST_DATA_PASSPHRASE: ${{ secrets.CCF_TEST_DATA_PASSPHRASE }}
+jobs:
+  build_and_test:
+    name: Build and test
+    runs-on: ubuntu-22.04
+    permissions:
+      checks: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: temurin
+          cache: gradle
+      - name: "Build and test"
+        id: build_and_test
+        run: |
+          ./gradlew --no-daemon javadoc check
+      - name: "Publish test results"
+        if: always()
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: |
+            ./build/test-results/**/*.xml
