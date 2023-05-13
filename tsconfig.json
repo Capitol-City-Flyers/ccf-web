@@ -2,8 +2,8 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "jsx": "react",
-    "module": "es6",
-    "moduleResolution": "node",
+    "module": "esnext",
+    "moduleResolution": "nodenext",
     "strict": true,
     "resolveJsonModule": true,
     "target": "es6"

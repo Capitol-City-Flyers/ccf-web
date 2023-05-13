@@ -31,9 +31,9 @@ class AircraftClubsProxyController {
     )
     @ResponseBody
     fun proxy(
-        request: RequestEntity<String>,
+        request: RequestEntity<ByteArray>,
         @CookieValue(value = "PHPSESSID", required = false) sessionId: String?
-    ): ResponseEntity<String> {
+    ): ResponseEntity<ByteArray> {
         val stripped = request.url.path.removePrefix("/aircraftclubs/")
         val uriBuilder = UriComponentsBuilder.fromUri(URI.create("https://www.aircraftclubs.com/").resolve(stripped))
         if (null != request.url.query) {
@@ -55,7 +55,7 @@ class AircraftClubsProxyController {
             }
         }
         val entity = HttpEntity(request.body, headers)
-        return template.exchange(uri, request.method!!, entity, String::class.java)
+        return template.exchange(uri, request.method!!, entity, ByteArray::class.java)
     }
 
     companion object {
