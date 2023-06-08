@@ -5,7 +5,7 @@ Dependencies:
 
 To run locally:
 ```shell
-$npm run dev
+$ npm run dev
 # Local URL will be echoed to standard output.
 ```
 
