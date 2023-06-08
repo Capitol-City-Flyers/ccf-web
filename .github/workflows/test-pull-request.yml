@@ -1,4 +1,4 @@
-name: Build and test pull request
+name: Test pull request
 on: [pull_request]
 env:
   CCF_TEST_DATA_PASSPHRASE: ${{ secrets.CCF_TEST_DATA_PASSPHRASE }}
@@ -11,18 +11,15 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-node@v3
         with:
-          java-version: "17"
-          distribution: temurin
-          cache: gradle
-      - name: "Build and test"
-        id: build_and_test
-        run: |
-          ./gradlew --no-daemon javadoc check
+          node-version: "18"
+          cache: npm
+      - name: "Test"
+        id: test
+        run: npm run test
       - name: "Publish test results"
         if: always()
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          files: |
-            ./build/test-results/**/*.xml
+          files: ./reports/report.xml

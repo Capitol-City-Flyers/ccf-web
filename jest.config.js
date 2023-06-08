@@ -7,6 +7,13 @@ const createJestConfig = nextJest({
 
 // Add any custom config to be passed to Jest
 const customJestConfig = {
+    reporters: [
+        "default",
+        ["jest-junit", {
+            outputDirectory: "reports",
+            outputName: "report.xml"
+        }]
+    ],
     setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
     testEnvironment: "jest-environment-node",
     testRegex: "__tests__/.*\.test\.[jt]sx?$"

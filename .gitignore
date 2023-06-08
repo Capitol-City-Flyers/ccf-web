@@ -15,6 +15,9 @@
 # production
 /build
 
+# test
+/reports/
+
 # misc
 .DS_Store
 .idea
