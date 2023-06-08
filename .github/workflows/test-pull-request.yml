@@ -22,4 +22,4 @@ jobs:
         if: always()
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          files: ./reports/report.xml
+          files: ./build/test-results.xml

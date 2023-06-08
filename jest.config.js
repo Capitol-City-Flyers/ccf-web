@@ -10,8 +10,8 @@ const customJestConfig = {
     reporters: [
         "default",
         ["jest-junit", {
-            outputDirectory: "reports",
-            outputName: "report.xml"
+            outputDirectory: "./build",
+            outputName: "test-results.xml"
         }]
     ],
     setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
