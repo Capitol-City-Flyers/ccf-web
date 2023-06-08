@@ -1,11 +1,12 @@
 import {PropsWithChildren, useEffect, useMemo} from "react";
 import {freeze} from "immer";
 import _ from "lodash";
-import messagesJson from "../../../data/messages.json";
 import {useAppState} from "../app/AppContext";
 import {MessageResolver} from "./messages-types";
 import {MessagesContext, messagesContext} from "./MessagesContext";
 import {localeLookupList, resolveMessage} from "./messages-utils";
+
+import messagesJson from "../../messages.json";
 
 /**
  * [MessagesProvider] resolves locale specific message bundles and exposes them for access via the [useMessages] hook.

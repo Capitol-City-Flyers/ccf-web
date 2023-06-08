@@ -1,11 +1,12 @@
-import {AxiosInstance} from "axios";
 import {freeze} from "immer";
 import jszip from "jszip";
 import {DateTime} from "luxon";
 import {cycleInterval} from "../../../utilities/date-utils";
 import {DateCalc} from "../../../utilities/DateCalc";
-import {Airport, WeatherStation} from "./nfdc-types";
 import {NFDCParser} from "./NFDCParser";
+import type {AxiosInstance} from "axios";
+import type {WeatherStation} from "../../../providers/database/database-types";
+import type {Airport} from "./nfdc-types";
 
 export class NFDCClient {
     private readonly parser: NFDCParser;

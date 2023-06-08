@@ -3,7 +3,7 @@ import type {Reservation, Sync} from "./database-types";
 
 export class ClubDexie extends Dexie {
     reservation: Table<Reservation>;
-    sync: Table<Sync>;
+    sync: Table<Sync<any>>;
 
     constructor() {
         super("club");

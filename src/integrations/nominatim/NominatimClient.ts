@@ -37,13 +37,13 @@ export class NominatimClient implements ReverseGeoProvider {
         const {latitude, longitude} = coords;
 
         /* Note: throttle Nominatim API requests to 1 per 5sec, they ask nicely. */
-        return this.throttledAxiosGet("./reverse", {
+        return this.throttledAxiosGet<NominatimResponse>("./reverse", {
             params: {
                 lat: latitude,
                 lon: longitude,
                 zoom: 10
             }
-        }).then(({data}: { data: NominatimResponse }) => {
+        }).then(({data}) => {
             if (isError(data)) {
                 const {error} = data;
                 console.debug(`Failed to retrieve name for [${latitude}, ${longitude}] because an error occurred: [${error}].`, data);

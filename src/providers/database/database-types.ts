@@ -12,7 +12,7 @@ export interface Reservation {
     kind: "aircraft";
     dateTimeRange: string;
     tailNumber: TailNumber;
-    ref: { [K in keyof IntegrationConfig]: string; }
+    ref: Partial<{ [K in keyof IntegrationConfig]: string; }>;
 }
 
 export interface WeatherStation {
