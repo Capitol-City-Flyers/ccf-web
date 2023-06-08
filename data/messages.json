@@ -1,0 +1,24 @@
+{
+  "_default": {
+    "cin.action.login": "Login",
+    "cin.action.logout": "Log Out",
+    "cin.format.identity.display-name": "{0} {1}",
+    "cin.label.preference.enable-geolocation": "Enable geolocation",
+    "cin.label.preference.install": "Install on device for offline access",
+    "cin.label.user.password": "Password",
+    "cin.label.user.username": "Username",
+    "cin.login.failed": "Login failed",
+    "cin.login.incorrect": "Login incorrect",
+    "cin.login.save-username": "Save username",
+    "cin.login.stay-logged-in": "Stay logged in",
+    "cin.title.access-denied": "Access Denied",
+    "cin.title.member": "Member",
+    "cin.title.preferences": "Preferences",
+    "cin.title.retry": "Retry",
+    "ccf.org.description": "Member owned flying club in Madison, Wisconsin",
+    "ccf.site.title": "Capitol City Flyers",
+    "ccf.ios.home-screen.title": "CapCityFlyers"
+  },
+  "en-US": {},
+  "en": {}
+}

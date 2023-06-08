@@ -1,0 +1,228 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    background: white;
+}
+
+/* Site (top) nav. */
+.ccf-site-nav {
+    background: linear-gradient(to bottom, theme("colors.blue.100"), white 2rem);
+    @apply drop-shadow-md fixed flex flex-row h-12 items-center pl-2 pr-3 space-x-2 top-0 w-full z-20
+}
+
+/* Action nav, bottom or left depending upon screen width. */
+.ccf-action-nav {
+    background: linear-gradient(to top, theme("colors.green.100"), white 2rem);
+    @apply border-gray-100 border-t-2 bottom-0 fixed flex flex-row h-12 items-center justify-evenly left-0 py-2 text-2xl w-full z-20 md:border-t-0 md:border-r-2 md:h-screen md:flex-col md:justify-start md:py-16 md:space-y-4 md:top-0 md:w-20 md:z-10
+}
+
+/* Stretch site nav down to keep status bar readable on iOS. */
+.ccf-standalone .ccf-site-nav {
+    background: linear-gradient(to bottom, theme("colors.blue.300"), theme("colors.blue.100") 1.5rem, white 3rem);
+    height: 4rem;
+    padding-top: 0.75rem;
+}
+
+.ccf-standalone .ccf-content {
+    padding-top: 4rem;
+}
+
+@media screen(md) {
+    .ccf-standalone .ccf-action-nav {
+        padding-top: 5rem;
+    }
+}
+
+/* Push height of short pages down to hide "status bar height left blank at bottom" glitch on full screen iOS. */
+.ccf-standalone:after {
+    content: "\a0";
+    @apply absolute left-0 top-full h-16
+}
+
+div.hours-in-day {
+    grid-template-columns: repeat(96, 1fr);
+    @apply grid
+}
+
+a:not(.button, .btn) {
+    color: theme("colors.blue.900");
+    transition: all 0.125s;
+}
+
+a:hover:not(.button, .btn) {
+    color: theme("colors.blue.400");
+    transition: all 0.125s;
+}
+
+.ribbon a {
+    color: theme("colors.red.100");
+    font-weight: bold;
+}
+
+.ribbon a:hover {
+    color: theme("colors.red.300");
+}
+
+.hamburger {
+    cursor: pointer;
+    width: 1.5rem;
+    transition: all 0.25s;
+    position: relative;
+}
+
+.hamburger > span {
+    background-color: theme("colors.blue.600");
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 0.125rem;
+    width: 100%;
+    transition: all 0.125s;
+}
+
+.hamburger > span:first-child {
+    transform: translateY(0.25rem);
+}
+
+.hamburger > span:not(:first-child, :last-child) {
+    transform: translateY(0.75rem);
+}
+
+.hamburger > span:last-child {
+    transform: translateY(1.25rem);
+}
+
+.hamburger.open > span:first-child {
+    transform: rotate(45deg) translateY(0.5rem) translate(0.5rem);
+}
+
+.hamburger.open > span:not(:first-child, :last-child) {
+    display: none;
+}
+
+.hamburger.open > span:last-child {
+    transform: rotate(-45deg) translateY(0.5rem) translate(-0.5rem);
+}
+
+.ribbon {
+    content: "";
+    margin: 0;
+    background: red;
+    color: white;
+    padding: 0.125rem 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translateX(30%) translateY(0%) rotate(45deg);
+    transform-origin: top left;
+}
+
+.ribbon:before,
+.ribbon:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    margin: 0 -1px;
+    width: 100%;
+    height: 100%;
+    background: red;
+}
+
+.ribbon:before {
+    right: 100%;
+}
+
+.ribbon:after {
+    left: 100%;
+}
+
+/* Components. */
+
+/* Availability grid. */
+.av-grid {
+    --solar-interval-civil-twilight-color: theme("colors.slate.100");
+    --solar-interval-day-color: theme("colors.slate.50");
+    --solar-interval-hour-from-daylight-color: theme("colors.slate.200");
+    --solar-interval-night-color: theme("colors.slate.300");
+    border-radius: 0.5rem;
+}
+
+.av-grid > div {
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    position: relative;
+}
+
+.av-grid > div > span {
+    box-sizing: border-box;
+    cursor: pointer;
+    user-select: none;
+}
+
+.av-grid > div > span:hover {
+    border: 1px solid yellow;
+}
+
+.av-grid > .availability > .available {
+    background-color: theme("colors.green.500");
+}
+
+.av-grid > .availability > .unavailable {
+    background-color: theme("colors.red.500");
+}
+
+.av-grid > .availability > label {
+    color: white;
+    padding-left: 0.5em;
+    position: absolute;
+    pointer-events: none;
+}
+
+.av-grid > .availability > span {
+    height: 1.5rem;
+    opacity: 70%;
+}
+
+.av-grid > .annotations > span {
+    height: 0.5rem;
+    opacity: 60%;
+}
+
+.av-grid > .flight-category > .ifr {
+    background-color: theme("colors.red.300");
+}
+
+.av-grid > .flight-category > .low-ifr {
+    background-color: theme("colors.fuchsia.300");
+}
+
+.av-grid > .flight-category > .marginal-vfr {
+    background-color: theme("colors.violet.300");
+}
+
+.av-grid > .flight-category > .vfr {
+    background-color: theme("colors.green.300");
+}
+
+.av-grid > div:first-child > span:first-child {
+    border-top-left-radius: 0.5em;
+}
+
+.av-grid > div:first-child > span:last-child {
+    border-top-right-radius: 0.5em;
+}
+
+.av-grid > div:last-child > span:first-child {
+    border-bottom-left-radius: 0.5em;
+}
+
+.av-grid > div:last-child > span:last-child {
+    border-bottom-right-radius: 0.5em;
+}
+
+.av-grid > div:not(:first-child):not(:last-child) {
+    margin-bottom: 1px;
+}
