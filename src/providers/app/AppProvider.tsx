@@ -11,6 +11,7 @@ import AppStatePersister from "./AppStatePersister";
 import type {ProviderComponentProps} from "./app-types";
 import type {AppContext} from "./AppContext";
 import NFDCSynchronizer from "../../integrations/faa/nfdc/NFDCSynchronizer";
+import AppInstaller from "./AppInstaller";
 
 /**
  * {@link AppProvider} initializes basic application state and  standard service provider components. It also monitors
@@ -47,6 +48,7 @@ export default function AppProvider(props: PropsWithChildren<ProviderComponentPr
         <StorageProvider config={config} env={env}>
             <appStateContext.Provider value={context}>
                 <AppStatePersister/>
+                <AppInstaller/>
                 <GeolocationProvider/>
                 <AxiosProvider>
                     <DatabaseProvider>

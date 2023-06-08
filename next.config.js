@@ -1,19 +1,27 @@
+const withPWA = require("next-pwa")({
+    dest: "public",
+    register: false
+});
+
 /**
  * @type {(phase: string) => import("next").NextConfig}
  */
 module.exports = phase => {
+    let config;
     if ("phase-development-server" !== phase) {
-        return {
+        config = {
             output: "export"
         }
+    } else {
+        config = {
+            rewrites: async () => [{
+                source: "/api/aircraftclubs/:path*",
+                destination: "https://www.aircraftclubs.com/:path*"
+            }, {
+                source: "/api/faa/nfdc/:path*",
+                destination: "https://nfdc.faa.gov/:path*"
+            }]
+        };
     }
-    return {
-        rewrites: async () => [{
-            source: "/api/aircraftclubs/:path*",
-            destination: "https://www.aircraftclubs.com/:path*"
-        }, {
-            source: "/api/faa/nfdc/:path*",
-            destination: "https://nfdc.faa.gov/:path*"
-        }]
-    };
+    return withPWA(config);
 };
