@@ -142,7 +142,7 @@ type NominatimResponse =
 function isError(value: any): value is NominatimError {
     return "object" === typeof value
         && "error" in value
-        && _.isString(value.error);
+        && "string" === typeof value.error;
 }
 
 /**
