@@ -1,10 +1,9 @@
-import Axios, {AxiosHeaders, AxiosInstance} from "axios";
+import {AxiosInstance} from "axios";
 import {freeze, immerable} from "immer";
 import _ from "lodash";
-
 import {throttleAsync} from "../../utilities/function-utils";
-import {ReverseGeoProvider} from "./nominatim-types";
 import {GeoCoordinates} from "../../navigation/navigation-types";
+import {ReverseGeoProvider} from "./nominatim-types";
 
 /**
  * {@link NominatimClient} encapsulates the process of retrieving a place name from a pair of geographic coordinates
@@ -13,23 +12,9 @@ import {GeoCoordinates} from "../../navigation/navigation-types";
 export class NominatimClient implements ReverseGeoProvider {
     [immerable] = true;
 
-    private readonly axios: AxiosInstance;
     private readonly throttledAxiosGet: AxiosInstance["get"];
 
-    private constructor(
-        /**
-         * Base URL of the Nominatim API.
-         */
-        baseUrl: URL = new URL("https://nominatim.openstreetmap.org/")
-    ) {
-        const axios = Axios.create({
-            baseURL: baseUrl.href,
-            headers: new AxiosHeaders().setAccept("application/json"),
-            params: {
-                format: "json"
-            }
-        });
-        this.axios = axios;
+    private constructor(axios: AxiosInstance) {
         this.throttledAxiosGet = throttleAsync(_.bind(axios.get, axios), 5_000);
     }
 
@@ -57,7 +42,7 @@ export class NominatimClient implements ReverseGeoProvider {
     private toPlaceName(address: NominatimPlace["address"]) {
         const {country_code} = address,
             segments: Array<undefined | string> = [this.municipalityName(address)];
-        if ("us" !== country_code) {
+        if ("us" !== country_code && "ca" !== country_code) {
             const {county} = address;
             segments.push(county);
         }
@@ -90,8 +75,8 @@ export class NominatimClient implements ReverseGeoProvider {
         }
     }
 
-    static create(baseUrl?: URL): ReverseGeoProvider {
-        return new NominatimClient(baseUrl);
+    static create(axios: AxiosInstance) {
+        return freeze(new NominatimClient(axios));
     }
 }
 

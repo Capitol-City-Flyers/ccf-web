@@ -120,6 +120,10 @@ export class AppStateImpl implements AppState {
                 return produce(previous, draft => {
                     _.merge(draft.status.tasks[action.payload.id].status, action.payload.status);
                 });
+            case "visibleStatusChanged":
+                return produce(previous, draft => {
+                    draft.status.visible = action.payload;
+                })
         }
         throw Error("Unsupported action.");
     }
@@ -139,6 +143,7 @@ export class AppStateImpl implements AppState {
             prefs: config.defaults.prefs,
             status: {
                 online: !build && window.navigator.onLine,
+                visible: !build && "visible" === window.document.visibilityState,
                 tasks: {}
             }
         })), true);

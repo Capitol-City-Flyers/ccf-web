@@ -31,16 +31,25 @@ export default function AppProvider(props: PropsWithChildren<ProviderComponentPr
     useEffect(() => {
         if (!build) {
             const onOnlineChange = ({type}) => {
-                dispatch({
-                    kind: "onlineStatusChanged",
-                    payload: "online" === type
-                });
-            }
+                    dispatch({
+                        kind: "onlineStatusChanged",
+                        payload: "online" === type
+                    });
+                },
+                onVisibleChange = ({target}: Event) => {
+                    const {visibilityState} = target as Document;
+                    dispatch({
+                        kind: "visibleStatusChanged",
+                        payload: "visible" === visibilityState
+                    });
+                }
             window.addEventListener("offline", onOnlineChange);
             window.addEventListener("online", onOnlineChange);
+            window.addEventListener("visibilitychange", onVisibleChange);
             return () => {
                 window.removeEventListener("offline", onOnlineChange);
                 window.removeEventListener("online", onOnlineChange);
+                window.removeEventListener("visibilitychange", onVisibleChange);
             };
         }
     }, [dispatch]);
@@ -55,7 +64,7 @@ export default function AppProvider(props: PropsWithChildren<ProviderComponentPr
                         <MessagesProvider>
                             {children}
                         </MessagesProvider>
-                        <NFDCSynchronizer />
+                        <NFDCSynchronizer/>
                     </DatabaseProvider>
                 </AxiosProvider>
             </appStateContext.Provider>

@@ -3,6 +3,8 @@
     "cin.action.login": "Login",
     "cin.action.logout": "Log Out",
     "cin.format.identity.display-name": "{0} {1}",
+    "cin.label.flying-ribbon.in-flight": "I'm Flying!",
+    "cin.label.flying-ribbon.near": "near",
     "cin.label.preference.enable-geolocation": "Enable geolocation",
     "cin.label.preference.install": "Install on device for offline access",
     "cin.label.user.password": "Password",

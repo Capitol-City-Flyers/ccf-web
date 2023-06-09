@@ -1,5 +1,7 @@
 import {Config, Environment} from "./config-types";
 import AircraftClubsProvider from "./integrations/aircraftclubs/AircraftClubsProvider";
+import OpenSkyProvider from "./integrations/opensky/OpenSkyProvider";
+import NominatimProvider from "./integrations/nominatim/NominatimProvider";
 
 export default function (env: Environment) {
     const build = "_build" === env;
@@ -34,9 +36,9 @@ export default function (env: Environment) {
                     16: "memberAdmin",
                     20: "reportViewer",
 
-                    /* Note: 98/99 don't seem to come back correctly in the login response, they may be reversed. The values on the edit
-                    roles page are 98=member and 99=guest, but my account has "member" role, NOT "guest" role, while login returns 99
-                    but NOT 98 for me. */
+                    /* Note: 98/99 don't seem to come back correctly in the login response, they may be reversed. The
+                    values on the edit roles page are 98=member and 99=guest, but my account has "member" role, NOT
+                    "guest" role, while login returns 99 but NOT 98 for me. */
                     98: "guest",
                     99: "member"
                 }
@@ -47,6 +49,12 @@ export default function (env: Environment) {
                         ? new URL("https://nfdc.faa.gov/")
                         : new URL("/api/faa/nfdc/", env)
                 }
+            },
+            nominatim: {
+                baseURL: new URL("https://nominatim.openstreetmap.org/")
+            },
+            openSky: {
+                baseURL: new URL("https://opensky-network.org/api/")
             }
         },
         operator: {
@@ -69,9 +77,15 @@ export default function (env: Environment) {
             ]
         },
         providers: [
-            AircraftClubsProvider
+            AircraftClubsProvider,
+            NominatimProvider,
+            OpenSkyProvider
         ],
         sync: {
+            flightStatus: {
+                interval: {minute: 15},
+                inFlightInterval: {minute: 5}
+            },
             reservations: {
                 interval: {minute: 15}
             }

@@ -114,6 +114,13 @@ export function excludedRanges(bounds: DateRange, ranges: Array<DateRange>): Arr
 }
 
 /**
+ * Get *now* in the UTC zone as a {@link DateTime}.
+ */
+export function nowUTC() {
+    return DateTime.now().setZone("UTC");
+}
+
+/**
  * Given a bounding interval and an array of zero or more date/times *within* that interval, return an array of numbers
  * representing the fractional (`[0..1]`) time within the bounding interval. In other words, if a date/time is equal to
  * the start of the bounding interval, `0` is returned as the corresponding fraction; if it is equal to the end of the

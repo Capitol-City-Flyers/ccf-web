@@ -1,7 +1,7 @@
 import {ElementType, PropsWithChildren} from "react";
 import {TailNumber} from "./aircraft/aircraft-types";
 import type {PrefsState, ProviderComponentProps, Role} from "./providers/app/app-types";
-import {DurationLike} from "luxon";
+import {Duration, DurationLike} from "luxon";
 
 export type Environment =
     | "_build"
@@ -33,6 +33,12 @@ export interface IntegrationConfig {
         nfdc: {
             baseURL: URL;
         }
+    },
+    nominatim: {
+        baseURL: URL;
+    }
+    openSky: {
+        baseURL: URL;
     }
 }
 
@@ -45,6 +51,22 @@ interface OperatorConfig {
 }
 
 interface SyncConfig {
+
+    /**
+     * Synchronization/update of flight status for things like the "I'm Flying" ribbon on the Aircraft Gallery.
+     */
+    flightStatus: {
+
+        /**
+         * Update interval when the aircraft has *not* been seen in flight recently. Typically longer duration.
+         */
+        interval: DurationLike;
+
+        /**
+         * Update interval when the aircraft has been seen in flight recently. Typically shorter duration.
+         */
+        inFlightInterval: DurationLike; /* when known to be in flight (probably shorter duration.) */
+    };
     reservations: {
         interval: DurationLike;
     }

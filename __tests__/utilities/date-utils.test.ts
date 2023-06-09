@@ -7,7 +7,7 @@ import {
     julianDay,
     toFractions,
     toLengthFractions,
-    toTransitions,
+    toTransitions, nowUTC,
 } from "../../src/utilities/date-utils";
 
 describe("DateUtils", () => {
@@ -46,6 +46,14 @@ describe("DateUtils", () => {
         test("At start of day", () => {
             expect(julianDay(DateTime.fromISO("2023-04-20T00:00:00Z"))).toBe(2_460_054);
         });
+    });
+    test("nowUTC()", () => {
+        const beforeOrSame = DateTime.now().setZone("UTC"),
+            now = nowUTC(),
+            afterOrSame = DateTime.now().setZone("UTC");
+        expect(now.zoneName).toBe("UTC");
+        expect(now.diff(beforeOrSame).toMillis()).toBeGreaterThanOrEqual(0);
+        expect(now.diff(afterOrSame).toMillis()).toBeLessThanOrEqual(0);
     });
     describe("toTransitions()", () => {
         test("For an empty interval array", () => {

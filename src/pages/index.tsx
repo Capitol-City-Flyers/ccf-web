@@ -1,7 +1,5 @@
-import Head from 'next/head';
-import Link from "next/link";
-
 import fleetJpg from "../../public/images/cap-city-flyers-fleet.jpg";
+import AircraftGallery from "../components/aircraft/AircraftGallery";
 
 export default function Home() {
     return (
@@ -45,7 +43,7 @@ export default function Home() {
                 </div>
             </section>
             <section className="flex">
-                {/*<AircraftGallery aircraft={aircraft}/>*/}
+                <AircraftGallery/>
             </section>
             <footer className="grow container relative mx-auto">
                 <div

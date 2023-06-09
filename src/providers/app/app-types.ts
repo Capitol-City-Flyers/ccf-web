@@ -116,7 +116,8 @@ export type AppStateAction =
     | StateRestored
     | TaskCompleted
     | TaskStarted
-    | TaskUpdated;
+    | TaskUpdated
+    | VisibleStatusChanged;
 
 /**
  * Authentication/authorization state.
@@ -141,8 +142,17 @@ export interface PrefsState {
  */
 export interface StatusState {
     device?: DeviceStatus;
+
+    /**
+     * Is the device online?
+     */
     online: boolean;
     position?: GeoPosition;
+
+    /**
+     * Is the document visible--not obscured by some other window or tab?
+     */
+    visible: boolean;
     tasks: Record<string, BackgroundTask>;
 }
 
@@ -289,6 +299,11 @@ interface TaskUpdated {
         id: TaskId;
         status: Partial<BackgroundTask["status"]>;
     };
+}
+
+interface VisibleStatusChanged {
+    kind: "visibleStatusChanged";
+    payload: boolean;
 }
 
 export type TaskId = string;

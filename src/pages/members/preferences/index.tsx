@@ -2,7 +2,7 @@ import {ChangeEvent, useCallback, useEffect, useMemo, useRef, useState} from "re
 import {produce} from "immer";
 import {useApp} from "../../../providers/app/AppContext";
 import {useMessages} from "../../../providers/messages/MessagesContext";
-import {NominatimClient} from "../../../integrations/nominatim/NominatimClient";
+import {useNominatimClient} from "../../../integrations/nominatim/NominatimContext";
 
 export default function Preferences() {
     const messages = useMessages({
@@ -12,7 +12,7 @@ export default function Preferences() {
         {dispatch, state: {prefs: {device}, status: {position}}} = useApp(),
         {current: initialState} = useRef(device),
         [form, updateForm] = useState(initialState),
-        nominatim = useMemo(() => NominatimClient.create(), []),
+        nominatim = useNominatimClient(),
         [place, setPlace] = useState<string>();
 
     useEffect(() => {
