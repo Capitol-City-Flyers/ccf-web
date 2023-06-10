@@ -8,6 +8,11 @@ import {DateTime, DurationUnit, Interval} from "luxon";
 export type DateRange = [Date, Date];
 
 /**
+ * Unix epoch in the UTC zone.
+ */
+export const EPOCH_UTC = DateTime.fromMillis(0, {zone: "UTC"});
+
+/**
  * An interval which is known *not* to be invalid.
  */
 export type ValidInterval = {

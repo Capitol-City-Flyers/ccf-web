@@ -81,6 +81,33 @@ export async function encryptMatchingTextResources(pattern: string) {
 }
 
 /**
+ * Decrypt a text string which has been encrypted via {@link encryptText}. Requires the test data passphrase to be
+ * present in the environment.
+ *
+ * @param encrypted the encrypted text string.
+ */
+export function decryptText(encrypted: string) {
+    const [ivHex, encryptedHex] = encrypted.split(":"),
+        iv = Buffer.from(ivHex, "hex"),
+        decrypt = crypto.createDecipheriv("aes256", requireTestDataPassphrase(), iv);
+    return decrypt.update(encryptedHex, "hex", "utf8") + decrypt.final("utf8");
+}
+
+/**
+ * Encrypt a text string using the test data passphrase, which must be present in the environment. The string can be
+ * decrypted via {@link decryptText}.
+ *
+ * @param text the text string to encrypt.
+ */
+export function encryptText(text: string) {
+    const key = Buffer.from(requireTestDataPassphrase(), "utf8"),
+        iv = crypto.randomBytes(16),
+        encrypt = crypto.createCipheriv("aes256", key, iv),
+        encrypted = encrypt.update(text, "utf8", "hex") + encrypt.final("hex");
+    return `${iv.toString("hex")}:${encrypted}`;
+}
+
+/**
  * Encrypt a file such that it is suitable for decryption via {@link decryptTextResource}. The encrypted file will be
  * created in the same directory as the original file, with `.enc` appended to the filename.
  *

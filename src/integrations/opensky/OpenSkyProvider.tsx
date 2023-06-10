@@ -1,6 +1,7 @@
 import {PropsWithChildren, useMemo} from "react";
 import {AxiosHeaders, type CreateAxiosDefaults} from "axios";
 import {freeze} from "immer";
+import qs from "qs";
 import {useApp} from "../../providers/app/AppContext";
 import {useAxiosInstance} from "../../providers/axios/AxiosInstanceContext";
 import {validateIn} from "../../utilities/array-utils";
@@ -16,10 +17,11 @@ import {type OpenSkyContext, openSkyContext} from "./OpenSkyContext";
  */
 export default function OpenSkyProvider(props: PropsWithChildren) {
     const {children} = props,
-        {config: {integration: {openSky: {baseURL}}}, env} = useApp(),
+        {config: {integration: {openSky: {baseURL}}}} = useApp(),
         axiosConfig = useMemo<CreateAxiosDefaults>(() => freeze({
             baseURL: baseURL.href,
             headers: new AxiosHeaders().setAccept("application/json"),
+            paramsSerializer: params => qs.stringify(params, {arrayFormat: "repeat"}),
             responseType: "json",
             validateStatus: validateIn(200, 429)
         }, true), [baseURL]),
