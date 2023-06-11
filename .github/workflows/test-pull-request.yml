@@ -3,8 +3,8 @@ on: [pull_request]
 env:
   CCF_TEST_DATA_PASSPHRASE: ${{ secrets.CCF_TEST_DATA_PASSPHRASE }}
 jobs:
-  build_and_test:
-    name: Build and test
+  test:
+    name: Test
     runs-on: ubuntu-22.04
     permissions:
       checks: write
