@@ -2,6 +2,10 @@ import {OpenSkyClient} from "../../../src/integrations/opensky/OpenSkyClient";
 import {encryptText} from "../../test-data-utils";
 
 describe("OpenSkyClient", () => {
+    test("Do nothing", () => {
+        /* This here for manual test runs during development. Avoid "suite must contain at least one test" error. */
+        expect(true).toBe(true);
+    });
     // test("queryPositions()", async () => {
     //     if (!canDecryptTextResources()) {
     //         return Promise.resolve();

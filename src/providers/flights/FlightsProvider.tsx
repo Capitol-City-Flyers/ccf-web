@@ -30,7 +30,7 @@ export default function FlightsProvider(props: PropsWithChildren<FlightsProvider
     const {aircraft, children} = props,
         aircraftByTailNumber = _.keyBy(aircraft, "tailNumber"),
         {status: {online, visible}} = useAppState(),
-        {sync: {flightStatus: config}} = useConfig(),
+        {sync: {flights: config}} = useConfig(),
         openSky = useOpenSkyClient(),
         nominatim = useNominatimClient(),
         initialState = useMemo<FlightsState>(() => freeze({
@@ -136,7 +136,7 @@ export default function FlightsProvider(props: PropsWithChildren<FlightsProvider
  * @param flight the flight.
  * @param config the update interval configuration.
  */
-function calculateNextUpdate(flight: AircraftFlightStatus, config: SyncConfig["flightStatus"]) {
+function calculateNextUpdate(flight: AircraftFlightStatus, config: SyncConfig["flights"]) {
     const {status, updated} = flight;
     switch (status) {
         case "undetermined":
@@ -155,6 +155,6 @@ function calculateNextUpdate(flight: AircraftFlightStatus, config: SyncConfig["f
  * @param config the update interval configuration.
  * @param cutoff the cutoff date/time.
  */
-function needsUpdate(flight: AircraftFlightStatus, config: SyncConfig["flightStatus"], cutoff: DateTime) {
+function needsUpdate(flight: AircraftFlightStatus, config: SyncConfig["flights"], cutoff: DateTime) {
     return cutoff >= calculateNextUpdate(flight, config);
 }

@@ -53,7 +53,7 @@ export interface SyncConfig {
     /**
      * Synchronization/update of flight status for things like the "I'm Flying" ribbon on the Aircraft Gallery.
      */
-    flightStatus: {
+    flights: {
 
         /**
          * Update interval when the aircraft has been seen in flight recently. Typically shorter duration.
