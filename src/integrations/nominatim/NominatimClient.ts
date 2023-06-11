@@ -1,9 +1,9 @@
-import {AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
 import {freeze, immerable} from "immer";
 import _ from "lodash";
 import {throttleAsync} from "../../utilities/function-utils";
 import {GeoCoordinates} from "../../navigation/navigation-types";
 import {ReverseGeoProvider} from "./nominatim-types";
+import type {AxiosInstance} from "axios";
 
 /**
  * {@link NominatimClient} encapsulates the process of retrieving a place name from a pair of geographic coordinates
@@ -12,10 +12,10 @@ import {ReverseGeoProvider} from "./nominatim-types";
 export class NominatimClient implements ReverseGeoProvider {
     [immerable] = true;
 
-    private readonly throttledAxiosGet: <T = any, R = AxiosResponse<T>, D = any>(url: string, config?: AxiosRequestConfig<D>) => Promise<R>;
+    private readonly throttledAxiosGet: AxiosInstance["get"];
 
     private constructor(axios: AxiosInstance) {
-        this.throttledAxiosGet = throttleAsync(_.bind(axios.get, axios), 5_000);
+        this.throttledAxiosGet = throttleAsync(_.bind(axios.get, axios), 5_000) as any;
     }
 
     retrievePlace(coords: GeoCoordinates): Promise<null | string> {
