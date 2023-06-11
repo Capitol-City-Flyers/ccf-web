@@ -3,11 +3,11 @@ import {JSDOM} from "jsdom";
 import _ from "lodash";
 import {decryptTextResource} from "../../../test-data-utils";
 import {ResponseParser} from "../../../../src/integrations/aircraftclubs/session/ResponseParser";
-import {
+import {type AircraftIdent} from "../../../../src/aircraft/aircraft-types";
+import type {
     GetBookingsForCalendarResponse,
     LoginSuccess
 } from "../../../../src/integrations/aircraftclubs/aircraftclubs-types";
-import {AircraftConfig} from "../../../../src/config-types";
 
 describe("ResponseParser", () => {
     const instance = ResponseParser.create({
@@ -18,7 +18,7 @@ describe("ResponseParser", () => {
     } as LoginSuccess);
     test("parseGetBookingsForCalendar", async () => {
         const bookings: GetBookingsForCalendarResponse = JSON.parse(await decryptTextResource("./integrations/aircraftclubs/data/getBookingsForCalendar.json.enc")),
-            aircraft: AircraftConfig = {tailNumber: "N569DS", modeSCodeHex: "ABCDEF", refs: {aircraftClubs: "680"}};
+            aircraft: AircraftIdent = {tailNumber: "N569DS", modeSCodeHex: "ABCDEF"};
         expect(instance.parseGetBookingsForCalendarResponse(bookings, aircraft))
             .toStrictEqual([{
                 dateTimeRange: "2023-02-25T20:30:00.000Z/2023-02-26T00:00:00.000Z",

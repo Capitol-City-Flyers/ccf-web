@@ -1,9 +1,9 @@
 import {type AxiosInstance} from "axios";
 import {freeze, immerable} from "immer";
 import _ from "lodash";
-import {type AircraftConfig} from "../../config-types";
-import {OpenSkyResponseParser, StatesAllResponse} from "./OpenSkyResponseParser";
-import {AircraftPosition} from "./opensky-types";
+import {OpenSkyResponseParser, type StatesAllResponse} from "./OpenSkyResponseParser";
+import type {AircraftIdent} from "../../aircraft/aircraft-types";
+import type {AircraftPosition} from "./opensky-types";
 
 /**
  * {@link OpenSkyClient} encapsulates the process of retrieving flight position information from the
@@ -25,7 +25,7 @@ export class OpenSkyClient {
      *
      * @param aircraft the aircraft to query.
      */
-    async queryPositions(aircraft: Array<AircraftConfig>): Promise<Array<AircraftPosition>> {
+    async queryPositions(aircraft: Array<AircraftIdent>): Promise<Array<AircraftPosition>> {
         if (0 === aircraft.length) {
             return Promise.resolve([]);
         }

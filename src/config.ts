@@ -83,8 +83,8 @@ export default function (env: Environment) {
         ],
         sync: {
             flightStatus: {
-                interval: {minute: 15},
-                inFlightInterval: {minute: 5}
+                inFlightInterval: {minute: 5},
+                notInFlightInterval: {minute: 15}
             },
             reservations: {
                 interval: {minute: 15}

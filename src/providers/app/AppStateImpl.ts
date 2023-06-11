@@ -1,8 +1,8 @@
-import {freeze, immerable, produce} from "immer";
+import {castDraft, freeze, immerable, produce} from "immer";
 import _ from "lodash";
+import {nowUTC} from "../../utilities/date-utils";
 import type {Config, Environment} from "../../config-types";
 import type {AppState, AppStateAction, AuthState, PrefsState, StatusState, StoredAppState} from "./app-types";
-import {DateTime} from "luxon";
 
 /**
  * {@link AppStateImpl} is the implementation of the {@link AppState} interface.
@@ -14,7 +14,7 @@ export class AppStateImpl implements AppState {
     readonly prefs: PrefsState;
     readonly status: StatusState;
 
-    private constructor(initial: AppState) {
+    private constructor(initial: Omit<AppState, "toStoredState">) {
         this.auth = initial.auth;
         this.prefs = initial.prefs;
         this.status = initial.status;
@@ -112,9 +112,9 @@ export class AppStateImpl implements AppState {
                 });
             case "taskStarted":
                 return produce(previous, draft => {
-                    draft.status.tasks[action.payload.id] = _.assign(_.cloneDeep(action.payload), {
-                        started: DateTime.now().setZone("utc")
-                    });
+                    draft.status.tasks[action.payload.id] = castDraft(_.assign(_.cloneDeep(action.payload), {
+                        started: nowUTC()
+                    }));
                 });
             case "taskUpdated":
                 return produce(previous, draft => {
@@ -123,7 +123,7 @@ export class AppStateImpl implements AppState {
             case "visibleStatusChanged":
                 return produce(previous, draft => {
                     draft.status.visible = action.payload;
-                })
+                });
         }
         throw Error("Unsupported action.");
     }
@@ -179,6 +179,6 @@ export class AppStateImpl implements AppState {
                 credentials
             },
             prefs: {identity}
-        }), true);
+        }) as StoredAppState, true);
     }
 }

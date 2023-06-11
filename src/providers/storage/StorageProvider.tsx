@@ -11,7 +11,7 @@ export default function StorageProvider(props: PropsWithChildren<ProviderCompone
         context = useMemo<StorageContext>(() => {
             const storage = "_build" === env ? buildStorage : window.localStorage,
                 createRepository = _.partial(StorageRepositoryImpl.create, storage);
-            return freeze({createRepository}, true);
+            return freeze({createRepository}, true) as StorageContext;
         }, []);
     return (
         <storageContext.Provider value={context}>

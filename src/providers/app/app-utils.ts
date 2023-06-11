@@ -29,7 +29,7 @@ export function createRoleResolver<S extends Record<string, RolesSpec>>(
                 acc[key] = true;
             }
         }, {}))
-    });
+    } as RoleResolver & Partial<{ [R in Role]: true } & { [K in keyof S]: true }>, true);
 }
 
 /**

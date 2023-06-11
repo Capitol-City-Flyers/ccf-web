@@ -1,10 +1,11 @@
-import {AircraftConfig} from "../../config-types";
-import {GeoPosition} from "../../navigation/navigation-types";
 import {DateTime} from "luxon";
+import type {GeoPosition} from "../../navigation/navigation-types";
+import type {AircraftIdent} from "../../aircraft/aircraft-types";
 
 export interface AircraftPosition {
-    aircraft: AircraftConfig;
+    aircraft: AircraftIdent;
     position: GeoPosition;
     onGround: boolean;
     timestamp: DateTime;
+    place?: string;
 }

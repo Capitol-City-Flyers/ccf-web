@@ -1,22 +1,19 @@
 import {OpenSkyResponseParser, StatesAllResponse} from "../../../src/integrations/opensky/OpenSkyResponseParser";
-import {AircraftConfig} from "../../../src/config-types";
 import {DateTime} from "luxon";
+import {AircraftIdent} from "../../../src/aircraft/aircraft-types";
 
 describe("OpenSkyResponseParser", () => {
     const instance = OpenSkyResponseParser.create();
     test("parseStatesAllResponse()", () => {
-        const aircraft: Array<AircraftConfig> = [{
+        const aircraft: Array<AircraftIdent> = [{
                 tailNumber: "N12345",
-                modeSCodeHex: "A6692D",
-                refs: {}
+                modeSCodeHex: "A6692D"
             }, {
                 tailNumber: "N23456",
-                modeSCodeHex: "A7ED0D",
-                refs: {}
+                modeSCodeHex: "A7ED0D"
             }, {
                 tailNumber: "N34567",
-                modeSCodeHex: "A05B83",
-                refs: {}
+                modeSCodeHex: "A05B83"
             }],
             response: StatesAllResponse = {
                 "time": 1686400853,

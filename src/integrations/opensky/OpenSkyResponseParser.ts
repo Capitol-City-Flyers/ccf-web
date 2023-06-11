@@ -1,8 +1,8 @@
 import _ from "lodash";
-import {AircraftPosition} from "./opensky-types";
-import {AircraftConfig} from "../../config-types";
 import {DateTime} from "luxon";
 import {freeze} from "immer";
+import type {AircraftIdent} from "../../aircraft/aircraft-types";
+import type {AircraftPosition} from "./opensky-types";
 
 /**
  * {@link OpenSkyResponseParser} parses OpenSky API responses into generic flight tracking data types.
@@ -11,7 +11,7 @@ export class OpenSkyResponseParser {
     private constructor() {
     }
 
-    parseStatesAllResponse(response: StatesAllResponse, aircraft: Array<AircraftConfig>) {
+    parseStatesAllResponse(response: StatesAllResponse, aircraft: Array<AircraftIdent>) {
         const aircraftByModeSCodeHexLowercase = _.keyBy(aircraft, ({modeSCodeHex}) => _.toLower(modeSCodeHex));
         return freeze<Array<AircraftPosition>>(_.map(response.states, state => {
             const [

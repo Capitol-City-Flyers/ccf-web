@@ -97,7 +97,7 @@ export class AxiosDecorator {
         if (isCancel(error)) {
 
             /* Don't have the request in the cancel case; delete *all* canceled requests. */
-            _.forEach(taskIdsByRequest.entries(), ([request, taskId]) => {
+            taskIdsByRequest.forEach((taskId, request) => {
                 if (!!request.cancelToken) {
                     dispatch({
                         kind: "taskCompleted",
@@ -105,7 +105,7 @@ export class AxiosDecorator {
                     });
                     taskIdsByRequest.delete(request);
                 }
-            });
+            })
         } else if (isAxiosError(error)) {
             dispatch({
                 kind: "taskCompleted",

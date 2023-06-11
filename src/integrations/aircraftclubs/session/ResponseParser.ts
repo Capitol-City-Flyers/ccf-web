@@ -5,6 +5,7 @@ import type {Zone} from "luxon";
 import type {AircraftConfig} from "../../../config-types";
 import type {Reservation} from "../../../providers/database/database-types";
 import type {GetBookingsForCalendarResponse, GetMembersResponse, LoginSuccess} from "../aircraftclubs-types";
+import {AircraftIdent} from "../../../aircraft/aircraft-types";
 
 /**
  * {@link ResponseParser} parses AircraftClubs API responses into simple data objects.
@@ -16,7 +17,7 @@ export class ResponseParser {
         this.zone = IANAZone.create(login.timezone);
     }
 
-    parseGetBookingsForCalendarResponse(response: GetBookingsForCalendarResponse, aircraft: AircraftConfig) {
+    parseGetBookingsForCalendarResponse(response: GetBookingsForCalendarResponse, aircraft: AircraftIdent) {
         return freeze<Array<Reservation>>(response.map(booking => {
             const {zone} = this,
                 times = _.mapValues({
