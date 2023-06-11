@@ -64,6 +64,10 @@ export class AppStateImpl implements AppState {
                 return produce(previous, draft => {
                     draft.prefs.identity = action.payload;
                 });
+            case "workerStatusChanged":
+                return produce(previous, draft => {
+                    draft.status.worker = action.payload;
+                });
             case "onlineStatusChanged":
                 return produce(previous, draft => {
                     draft.status.online = action.payload;
@@ -142,6 +146,7 @@ export class AppStateImpl implements AppState {
             },
             prefs: config.defaults.prefs,
             status: {
+                worker: "undetermined",
                 online: !build && window.navigator.onLine,
                 visible: !build && "visible" === window.document.visibilityState,
                 tasks: {}

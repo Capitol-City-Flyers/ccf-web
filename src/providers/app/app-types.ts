@@ -2,7 +2,7 @@ import {Method} from "axios";
 import {freeze} from "immer";
 import {DateTime} from "luxon";
 import {Config, Environment} from "../../config-types";
-import {GeoCoordinates, GeoPosition} from "../../navigation/navigation-types";
+import {GeoPosition} from "../../navigation/navigation-types";
 
 export interface ProviderComponentProps {
     config: Config;
@@ -117,7 +117,8 @@ export type AppStateAction =
     | TaskCompleted
     | TaskStarted
     | TaskUpdated
-    | VisibleStatusChanged;
+    | VisibleStatusChanged
+    | WorkerStatusChanged;
 
 /**
  * Authentication/authorization state.
@@ -147,13 +148,23 @@ export interface StatusState {
      * Is the device online?
      */
     online: boolean;
+
     position?: GeoPosition;
+
+    tasks: Record<string, BackgroundTask>;
 
     /**
      * Is the document visible--not obscured by some other window or tab?
      */
     visible: boolean;
-    tasks: Record<string, BackgroundTask>;
+
+    /**
+     * Is the service worker installed?
+     */
+    worker:
+        | "undetermined"
+        | "installed"
+        | "notInstalled";
 }
 
 export interface StoredAppState {
@@ -266,6 +277,11 @@ interface DevicePrefsChanged {
 interface IdentityPrefsChanged {
     kind: "identityPrefsChanged";
     payload: PrefsState["identity"];
+}
+
+interface WorkerStatusChanged {
+    kind: "workerStatusChanged";
+    payload: StatusState["worker"];
 }
 
 interface PositionStatusChanged {

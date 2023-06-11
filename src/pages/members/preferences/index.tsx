@@ -9,7 +9,8 @@ export default function Preferences() {
             enableGeolocationLabel: "cin.label.preference.enable-geolocation",
             installLabel: "cin.label.preference.install"
         }),
-        {dispatch, state: {prefs: {device}, status: {position}}} = useApp(),
+        {dispatch, state} = useApp(),
+        {prefs: {device}, status: {position}} = state,
         {current: initialState} = useRef(device),
         [form, updateForm] = useState(initialState),
         nominatim = useNominatimClient(),
