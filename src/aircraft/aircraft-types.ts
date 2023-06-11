@@ -1,8 +1,6 @@
 
-export interface Aircraft {
+export interface AircraftIdent {
     tailNumber: TailNumber;
-    manufacturer: string;
-    model: string;
     modeSCodeHex: string;
 }
 

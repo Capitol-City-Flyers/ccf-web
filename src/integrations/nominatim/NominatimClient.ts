@@ -1,4 +1,4 @@
-import {AxiosInstance} from "axios";
+import {AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
 import {freeze, immerable} from "immer";
 import _ from "lodash";
 import {throttleAsync} from "../../utilities/function-utils";
@@ -12,7 +12,7 @@ import {ReverseGeoProvider} from "./nominatim-types";
 export class NominatimClient implements ReverseGeoProvider {
     [immerable] = true;
 
-    private readonly throttledAxiosGet: AxiosInstance["get"];
+    private readonly throttledAxiosGet: <T = any, R = AxiosResponse<T>, D = any>(url: string, config?: AxiosRequestConfig<D>) => Promise<R>;
 
     private constructor(axios: AxiosInstance) {
         this.throttledAxiosGet = throttleAsync(_.bind(axios.get, axios), 5_000);

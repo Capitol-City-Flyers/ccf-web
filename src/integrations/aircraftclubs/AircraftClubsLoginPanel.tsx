@@ -27,7 +27,11 @@ export default function AircraftClubsLoginPanel() {
         initialForm = useMemo<BasicLoginFormContents>(() => {
             const {auth: {retention}} = prefs,
                 {credentials} = auth;
-            return freeze(_.assign({retention}, credentials), true);
+            return freeze(_.assign({
+                password: "",
+                username: "",
+                retention
+            }, credentials), true);
         }, []);
 
     /* Form event handlers. */

@@ -10,6 +10,7 @@ import FlyingRibbon from "./FlyingRibbon";
 import n271rg from "../../../public/images/N271RG_-_Profile_Down.jpg";
 import n569ds from "../../../public/images/N569DS_-_nose_skyward.jpg";
 import n8113b from "../../../public/images/N8113B_-_Profile.jpg";
+import FlightsProvider from "../../providers/flights/FlightsProvider";
 
 /**
  * {@link AircraftGallery} displays basic information and a single image for each aircraft. On medium or larger windows
@@ -25,7 +26,7 @@ export default function AircraftGallery() {
                 ...aircraft
             })), true), [aircraft]);
     return (
-        <>
+        <FlightsProvider aircraft={aircraft}>
             <div className="hidden space-x-3 md:flex md:flex-row">
                 {galleryAircraft.map((aircraft) => (
                     <div key={aircraft.tailNumber}
@@ -58,7 +59,7 @@ export default function AircraftGallery() {
                     </div>
                 ))}
             </div>
-        </>
+        </FlightsProvider>
     );
 }
 

@@ -1,5 +1,5 @@
 import {ElementType, PropsWithChildren} from "react";
-import {TailNumber} from "./aircraft/aircraft-types";
+import {AircraftIdent, TailNumber} from "./aircraft/aircraft-types";
 import type {PrefsState, ProviderComponentProps, Role} from "./providers/app/app-types";
 import {Duration, DurationLike} from "luxon";
 
@@ -7,9 +7,7 @@ export type Environment =
     | "_build"
     | URL;
 
-export interface AircraftConfig {
-    tailNumber: TailNumber;
-    modeSCodeHex: string;
+export interface AircraftConfig extends AircraftIdent {
     refs: Partial<{ [K in keyof IntegrationConfig]: string; }>;
 }
 
@@ -50,22 +48,22 @@ interface OperatorConfig {
     aircraft: Array<AircraftConfig>;
 }
 
-interface SyncConfig {
+export interface SyncConfig {
 
     /**
      * Synchronization/update of flight status for things like the "I'm Flying" ribbon on the Aircraft Gallery.
      */
-    flightStatus: {
-
-        /**
-         * Update interval when the aircraft has *not* been seen in flight recently. Typically longer duration.
-         */
-        interval: DurationLike;
+    flights: {
 
         /**
          * Update interval when the aircraft has been seen in flight recently. Typically shorter duration.
          */
         inFlightInterval: DurationLike; /* when known to be in flight (probably shorter duration.) */
+
+        /**
+         * Update interval when the aircraft has *not* been seen in flight recently. Typically longer duration.
+         */
+        notInFlightInterval: DurationLike;
     };
     reservations: {
         interval: DurationLike;

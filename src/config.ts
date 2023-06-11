@@ -82,9 +82,9 @@ export default function (env: Environment) {
             OpenSkyProvider
         ],
         sync: {
-            flightStatus: {
-                interval: {minute: 15},
-                inFlightInterval: {minute: 5}
+            flights: {
+                inFlightInterval: {minute: 5},
+                notInFlightInterval: {minute: 15}
             },
             reservations: {
                 interval: {minute: 15}
