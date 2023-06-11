@@ -40,7 +40,7 @@ export default function AppStatePersister() {
             }
             return updatedStoredState;
         });
-    }, [state.auth, state.prefs, state.status.device, state.status.position]);
+    }, [state.auth, state.prefs, state.status.device, state.status.position, state.status.sync]);
 
     /* Update local storage when persistent state changes occur. */
     useEffect(() => {

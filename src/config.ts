@@ -47,7 +47,11 @@ export default function (env: Environment) {
                 nfdc: {
                     baseURL: build
                         ? new URL("https://nfdc.faa.gov/")
-                        : new URL("/api/faa/nfdc/", env)
+                        : new URL("/api/faa/nfdc/", env),
+                    include: [
+                        "airports",
+                        "weatherStations"
+                    ]
                 }
             },
             nominatim: {

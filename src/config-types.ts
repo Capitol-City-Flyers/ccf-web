@@ -30,6 +30,10 @@ export interface IntegrationConfig {
     faa: {
         nfdc: {
             baseURL: URL;
+            include: Array<
+                | "airports"
+                | "weatherStations"
+            >;
         }
     },
     nominatim: {

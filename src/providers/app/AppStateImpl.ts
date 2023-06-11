@@ -3,6 +3,7 @@ import _ from "lodash";
 import {nowUTC} from "../../utilities/date-utils";
 import type {Config, Environment} from "../../config-types";
 import type {AppState, AppStateAction, AuthState, PrefsState, StatusState, StoredAppState} from "./app-types";
+import {isNFDCSync} from "./app-types";
 
 /**
  * {@link AppStateImpl} is the implementation of the {@link AppState} interface.
@@ -63,6 +64,26 @@ export class AppStateImpl implements AppState {
             case "identityPrefsChanged":
                 return produce(previous, draft => {
                     draft.prefs.identity = action.payload;
+                });
+            case "nfdcSegmentCompleted":
+                return produce(previous, draft => {
+                    const existing = draft.status.sync.find(isNFDCSync),
+                        {cycle, segment} = action.payload;
+                    if (null != existing) {
+                        const target = [existing.current, existing.next].find(next => cycle === next?.cycle);
+                        if (null != target && !_.includes(target.segments, segment)) {
+                            target.segments.push(segment);
+                            target.segments.sort();
+                        }
+                    } else {
+                        draft.status.sync.push({
+                            kind: "nfdcSync",
+                            current: {
+                                cycle,
+                                segments: [segment]
+                            }
+                        });
+                    }
                 });
             case "workerStatusChanged":
                 return produce(previous, draft => {
@@ -149,6 +170,7 @@ export class AppStateImpl implements AppState {
                 worker: "undetermined",
                 online: !build && window.navigator.onLine,
                 visible: !build && "visible" === window.document.visibilityState,
+                sync: [],
                 tasks: {}
             }
         })), true);
@@ -170,7 +192,7 @@ export class AppStateImpl implements AppState {
             {credentials} = auth;
         return freeze<StoredAppState>(_.merge({
             prefs: _.omit(prefs, "identity"),
-            status: _.pick(status, ["device", ...[enableGeolocation ? "position" : []]])
+            status: _.pick(status, ["device", "sync", ...[enableGeolocation ? "position" : []]])
         }, "saveUsername" === retention && credentials && {
             auth: {
                 credentials: {

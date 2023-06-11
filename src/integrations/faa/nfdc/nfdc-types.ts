@@ -1,19 +1,18 @@
 import {GeoCoordinates} from "../../../navigation/navigation-types";
+import {freeze} from "immer";
+import {DateTime} from "luxon";
 
-export interface AirportSummary {
-    cityName: string;
-    coordinates: GeoCoordinates;
-    countryCode: string;
-    elevation: number;
-    icaoIdent?: string;
-    ident: string;
-    name: string;
-    ownership: "public" | "private";
-    stateCode: string;
-    stateName: string;
-}
+export const NFDC_SEGMENTS = freeze([
+    "airports",
+    "weatherStations"
+] as const);
 
-export interface AWOSSummary {
+export type NFDCSegment = typeof NFDC_SEGMENTS[number];
+
+export type NFDCCycle = ReturnType<DateTime["toISODate"]>;
+
+export interface WeatherStation {
+    key: string; /* cycle.ident */
     cityName: string;
     coordinates: GeoCoordinates;
     ident: string;
@@ -32,8 +31,9 @@ export interface AWOSSummary {
 }
 
 export interface Airport {
+    key: string; /* cycle.ident */
     cityName: string;
-    location: GeoCoordinates;
+    coordinates: GeoCoordinates;
     countryCode: string;
     elevation: number;
     icaoIdent?: string;

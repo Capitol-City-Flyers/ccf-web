@@ -1,8 +1,10 @@
 import {Method} from "axios";
 import {freeze} from "immer";
+import _ from "lodash";
 import {DateTime} from "luxon";
 import {Config, Environment} from "../../config-types";
 import {GeoPosition} from "../../navigation/navigation-types";
+import {NFDCCycle, NFDCSegment} from "../../integrations/faa/nfdc/nfdc-types";
 
 export interface ProviderComponentProps {
     config: Config;
@@ -111,6 +113,7 @@ export type AppStateAction =
     | DeviceIdAssigned
     | DevicePrefsChanged
     | IdentityPrefsChanged
+    | NFDCSegmentCompleted
     | OnlineStatusChanged
     | PositionStatusChanged
     | StateRestored
@@ -151,6 +154,8 @@ export interface StatusState {
 
     position?: GeoPosition;
 
+    sync: Array<SyncState>;
+
     tasks: Record<string, BackgroundTask>;
 
     /**
@@ -167,6 +172,26 @@ export interface StatusState {
         | "notInstalled";
 }
 
+export interface NFDCSync {
+    kind: "nfdcSync";
+    current: NFDCCycleSync;
+    next?: NFDCCycleSync;
+}
+
+interface NFDCCycleSync {
+    cycle: NFDCCycle;
+    segments: Array<NFDCSegment>;
+}
+
+export type SyncState =
+    | NFDCSync;
+
+export function isNFDCSync(value: any): value is NFDCSync {
+    return _.isObject(value)
+        && "kind" in value
+        && "nfdcSync" === value.kind;
+}
+
 export interface StoredAppState {
     auth: {
         credentials?: Partial<BasicCredentials>;
@@ -176,6 +201,7 @@ export interface StoredAppState {
     status: {
         device: Pick<DeviceStatus, "id">;
         position?: StatusState["position"];
+        sync: StatusState["sync"];
     };
 }
 
@@ -287,6 +313,14 @@ interface WorkerStatusChanged {
 interface PositionStatusChanged {
     kind: "positionStatusChanged";
     payload: GeoPosition;
+}
+
+interface NFDCSegmentCompleted {
+    kind: "nfdcSegmentCompleted";
+    payload: {
+        cycle: NFDCCycle;
+        segment: NFDCSegment;
+    }
 }
 
 interface OnlineStatusChanged {
