@@ -1,10 +1,10 @@
+import type {AxiosInstance} from "axios";
 import {freeze} from "immer";
 import jszip from "jszip";
 import {DateTime} from "luxon";
 import {cycleInterval} from "../../../utilities/date-utils";
-import {NFDCParser} from "./NFDCParser";
-import type {AxiosInstance} from "axios";
 import type {Airport, WeatherStation} from "./nfdc-types";
+import {NFDCParser} from "./NFDCParser";
 
 export class NFDCClient {
     private readonly parser: NFDCParser;
@@ -20,13 +20,13 @@ export class NFDCClient {
     async getAirports(cycle: ReturnType<DateTime["toISODate"]>): Promise<Array<Airport>> {
         const {data} = await this.getCycleFile(cycle, "APT_CSV.zip"),
             zip = await jszip.loadAsync(data);
-        return this.parser.parseAirports(cycle, zip.file("APT_BASE.csv"));
+        return this.parser.parseAirports(zip.file("APT_BASE.csv"));
     }
 
     async getWeatherStations(cycle: ReturnType<DateTime["toISODate"]>): Promise<Array<WeatherStation>> {
         const response = await this.getCycleFile(cycle,"AWOS_CSV.zip"),
             zip = await jszip.loadAsync(response.data);
-        return this.parser.parseWeatherStations(cycle, zip.file("AWOS.csv"));
+        return this.parser.parseWeatherStations(zip.file("AWOS.csv"));
     }
 
     private getCycleFile(cycle: ReturnType<DateTime["toISODate"]>, suffix: string, offset: number = 0) {

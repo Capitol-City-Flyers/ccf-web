@@ -12,7 +12,6 @@ export type NFDCSegment = typeof NFDC_SEGMENTS[number];
 export type NFDCCycle = ReturnType<DateTime["toISODate"]>;
 
 export interface WeatherStation {
-    key: string; /* cycle.ident */
     cityName: string;
     coordinates: GeoCoordinates;
     ident: string;
@@ -31,7 +30,6 @@ export interface WeatherStation {
 }
 
 export interface Airport {
-    key: string; /* cycle.ident */
     cityName: string;
     coordinates: GeoCoordinates;
     countryCode: string;

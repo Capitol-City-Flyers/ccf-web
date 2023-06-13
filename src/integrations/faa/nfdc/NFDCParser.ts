@@ -1,18 +1,16 @@
 import {freeze} from "immer";
 import JSZip from "jszip";
 import _ from "lodash";
-import Papa, {ParseConfig} from "papaparse";
+import Papa, {type ParseConfig} from "papaparse";
 import type {Airport, WeatherStation} from "./nfdc-types";
-import {DateTime} from "luxon";
 
 export class NFDCParser {
 
     private constructor() {
     }
 
-    async parseAirports(cycle: ReturnType<DateTime["toISODate"]>, csv: JSZip.JSZipObject) {
+    async parseAirports(csv: JSZip.JSZipObject) {
         return this.parseCSV<Airport>(csv, record => ({
-            key: `${cycle}.${record["ARPT_ID"]}`,
             cityName: record["CITY"],
             coordinates: {
                 latitude: record["LAT_DECIMAL"],
@@ -29,9 +27,8 @@ export class NFDCParser {
         }));
     }
 
-    async parseWeatherStations(cycle: ReturnType<DateTime["toISODate"]>, csv: JSZip.JSZipObject) {
+    async parseWeatherStations(csv: JSZip.JSZipObject) {
         return this.parseCSV<WeatherStation>(csv, record => ({
-            key: `${cycle}.${record["ASOS_AWOS_ID"]}`,
             cityName: record["CITY"],
             coordinates: {
                 latitude: record["LAT_DECIMAL"],

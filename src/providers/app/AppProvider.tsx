@@ -10,7 +10,6 @@ import {AppStateImpl} from "./AppStateImpl";
 import AppStatePersister from "./AppStatePersister";
 import type {ProviderComponentProps} from "./app-types";
 import type {AppContext} from "./AppContext";
-import NFDCSynchronizer from "../../integrations/faa/nfdc/NFDCSynchronizer";
 import AppInstaller from "./AppInstaller";
 
 /**
@@ -64,7 +63,6 @@ export default function AppProvider(props: PropsWithChildren<ProviderComponentPr
                         <MessagesProvider>
                             {children}
                         </MessagesProvider>
-                        <NFDCSynchronizer/>
                     </DatabaseProvider>
                 </AxiosProvider>
             </appStateContext.Provider>
