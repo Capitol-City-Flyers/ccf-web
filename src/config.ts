@@ -2,6 +2,7 @@ import {Config, Environment} from "./config-types";
 import AircraftClubsProvider from "./integrations/aircraftclubs/AircraftClubsProvider";
 import OpenSkyProvider from "./integrations/opensky/OpenSkyProvider";
 import NominatimProvider from "./integrations/nominatim/NominatimProvider";
+import NFDCProvider from "./integrations/faa/nfdc/NFDCProvider";
 
 export default function (env: Environment) {
     const build = "_build" === env;
@@ -19,7 +20,7 @@ export default function (env: Environment) {
                     retention: "none"
                 },
                 ui: {
-                    language: "en"
+                    languages: ["en"]
                 }
             }
         },
@@ -81,6 +82,7 @@ export default function (env: Environment) {
             ]
         },
         providers: [
+            NFDCProvider,
             AircraftClubsProvider,
             NominatimProvider,
             OpenSkyProvider

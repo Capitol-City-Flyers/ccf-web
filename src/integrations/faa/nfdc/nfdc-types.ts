@@ -2,14 +2,14 @@ import {GeoCoordinates} from "../../../navigation/navigation-types";
 import {freeze} from "immer";
 import {DateTime} from "luxon";
 
-export const NFDC_SEGMENTS = freeze([
+export const NASR_SEGMENTS = freeze([
     "airports",
     "weatherStations"
 ] as const);
 
-export type NFDCSegment = typeof NFDC_SEGMENTS[number];
+export type NASRSegment = typeof NASR_SEGMENTS[number];
 
-export type NFDCCycle = ReturnType<DateTime["toISODate"]>;
+export type NASRCycle = ReturnType<DateTime["toISODate"]>;
 
 export interface WeatherStation {
     cityName: string;

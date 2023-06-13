@@ -5,12 +5,93 @@ import {
     cycleInterval,
     excludedRanges,
     julianDay,
+    periodInterval,
+    nowUTC,
     toFractions,
     toLengthFractions,
-    toTransitions, nowUTC,
+    toTransitions,
 } from "../../src/utilities/date-utils";
 
 describe("DateUtils", () => {
+    describe("periodInterval()", () => {
+        describe("for a simple period in days", () => {
+            const periodicity = {
+                base: DateTime.fromISO("2023-03-23T00:00:00.000Z", {setZone: true}),
+                duration: {days: 28}
+            };
+            test("with the default offset (zero)", () => {
+                const reference = DateTime.fromISO("2023-05-17T23:59:59.999Z", {setZone: true}),
+                    interval = periodInterval(periodicity, reference);
+                expect(interval.toISO()).toBe("2023-04-20T00:00:00.000Z/2023-05-18T00:00:00.000Z");
+            });
+            test("with a negative offset", () => {
+                const reference = DateTime.fromISO("2023-05-10T00:00:00Z", {setZone: true}),
+                    interval = periodInterval(periodicity, reference, -5);
+                expect(interval.toISO()).toBe("2022-12-01T00:00:00.000Z/2022-12-29T00:00:00.000Z");
+            });
+            test("with a positive offset", () => {
+                const reference = DateTime.fromISO("2023-05-10T00:00:00Z", {setZone: true}),
+                    interval = periodInterval(periodicity, reference, 5);
+                expect(interval.toISO()).toBe("2023-09-07T00:00:00.000Z/2023-10-05T00:00:00.000Z");
+            });
+        });
+        describe("for a simple period in quarters", () => {
+            const periodicity = {
+                base: DateTime.fromISO("2023-01-01T00:00:00.000Z", {setZone: true}),
+                duration: {quarters: 1}
+            };
+            test("with the default offset (zero)", () => {
+                const reference = DateTime.fromISO("2023-05-17T23:59:59.999Z", {setZone: true}),
+                    interval = periodInterval(periodicity, reference);
+                expect(interval.toISO()).toBe("2023-04-01T00:00:00.000Z/2023-07-01T00:00:00.000Z");
+            });
+            test("with a negative offset", () => {
+                const reference = DateTime.fromISO("2023-05-10T00:00:00Z", {setZone: true}),
+                    interval = periodInterval(periodicity, reference, -5);
+                expect(interval.toISO()).toBe("2022-01-01T00:00:00.000Z/2022-04-01T00:00:00.000Z");
+            });
+            test("with a positive offset", () => {
+                const reference = DateTime.fromISO("2023-05-10T00:00:00Z", {setZone: true}),
+                    interval = periodInterval(periodicity, reference, 5);
+                expect(interval.toISO()).toBe("2024-07-01T00:00:00.000Z/2024-10-01T00:00:00.000Z");
+            });
+        });
+    });
+    // test("Test", () => {
+    //     ,
+    //         reference = nowUTC(),
+    //         diff = base.diff(reference);
+    //
+    //     const orderedUnits = freeze<Array<DurationUnit>>(["years",
+    //         "quarters",
+    //         "months",
+    //         "weeks",
+    //         "days",
+    //         "hours",
+    //         "minutes",
+    //         "seconds",
+    //         "milliseconds"]);
+    //     const offset = 0;
+    //     const largestUnitIndex = orderedUnits.findIndex(unit => !!duration[unit]),
+    //         largestUnit = orderedUnits[largestUnitIndex],
+    //         diffInLargestUnit = reference.diff(base, largestUnit)[largestUnit],
+    //         offsetInLargestUnit = Math.floor(diffInLargestUnit / duration[largestUnit]),
+    //         start = base.plus({[largestUnit]: duration[largestUnit] * (offset + offsetInLargestUnit)});
+    //     let value = start;
+    //     for (let i = largestUnitIndex + 1; i < orderedUnits.length; i += 1) {
+    //         const unit = orderedUnits[i];
+    //         if (!!duration[unit]) {
+    //             value = value.plus({[orderedUnits[i]]: duration[unit] * (offset + offsetInLargestUnit)});
+    //         }
+    //     }
+    //     console.log(value.toISO());
+    //
+    //
+    //
+    //
+    //     // console.log("Offset", offset);
+    // });
+
     describe("cycleInterval()", () => {
         const base = DateTime.fromISO("2023-04-20T00:00:00Z");
         test("Current, at end of cycle", () => {

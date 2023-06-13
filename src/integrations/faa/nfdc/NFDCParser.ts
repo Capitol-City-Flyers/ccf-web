@@ -53,8 +53,14 @@ export class NFDCParser {
         return freeze(new NFDCParser(), true);
     }
 
+    /**
+     * Default parse options. Note that we exclude `_ID` from dynamic typing, always parsing as string, to avoid issues
+     * with identifiers like `0E0`, which would otherwise be interpreted as numbers.
+     *
+     * @private
+     */
     private static CSV_PARSE_OPTIONS = freeze<ParseConfig<Record<string, any>>>({
-        dynamicTyping: true,
+        dynamicTyping: column => !_.isString(column) || !column.endsWith("_ID"),
         header: true,
         skipEmptyLines: true
     });

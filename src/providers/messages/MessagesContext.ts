@@ -7,8 +7,9 @@ import {decorateResolver} from "./messages-utils";
  * Object held in the messages context.
  */
 export interface MessagesContext {
-    resolver: MessageResolver;
     bundle: Record<string, string>;
+    languages: Array<string>;
+    resolver: MessageResolver;
 }
 
 /**

@@ -144,12 +144,15 @@ export class AppStateImpl implements AppState {
             auth: {
                 roles: config.auth.defaultRoles
             },
-            prefs: config.defaults.prefs,
+            prefs: _.merge({}, config.defaults.prefs, !build && window.navigator.languages && {
+                ui: {
+                    languages: window.navigator.languages
+                }
+            }),
             status: {
                 worker: "undetermined",
                 online: !build && window.navigator.onLine,
                 visible: !build && "visible" === window.document.visibilityState,
-                sync: [],
                 tasks: {}
             }
         })), true);
@@ -171,7 +174,7 @@ export class AppStateImpl implements AppState {
             {credentials} = auth;
         return freeze<StoredAppState>(_.merge({
             prefs: _.omit(prefs, "identity"),
-            status: _.pick(status, ["device", "sync", ...[enableGeolocation ? "position" : []]])
+            status: _.pick(status, ["device", ...[enableGeolocation ? "position" : []]])
         }, "saveUsername" === retention && credentials && {
             auth: {
                 credentials: {

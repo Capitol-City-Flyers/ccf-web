@@ -249,7 +249,7 @@ interface IdentityPrefs {
  * User interface preferences.
  */
 interface UiPrefs {
-    language: string;
+    languages: Array<string>;
 }
 
 interface AuthChanged {

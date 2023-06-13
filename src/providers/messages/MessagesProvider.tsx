@@ -1,8 +1,7 @@
 import {PropsWithChildren, useEffect, useMemo} from "react";
 import {freeze} from "immer";
 import _ from "lodash";
-import {useAppState} from "../app/AppContext";
-import {MessageResolver} from "./messages-types";
+import {useAppState, useConfig} from "../app/AppContext";
 import {MessagesContext, messagesContext} from "./MessagesContext";
 import {localeLookupList, resolveMessage} from "./messages-utils";
 
@@ -15,15 +14,25 @@ import messagesJson from "../../messages.json";
  * @constructor
  */
 export default function MessagesProvider({children}: PropsWithChildren) {
-    const {prefs: {ui: {language}}} = useAppState(),
+    const {prefs: {ui: {languages: preferredLanguages}}} = useAppState(),
+        {defaults: {prefs: {ui: {languages: defaultLanguages}}}} = useConfig(),
         context = useMemo<MessagesContext>(() => {
-            const locales = localeLookupList(language),
-                bundle = _.defaults({}, ...locales.map(locale => messagesJson[locale] || {})),
-                resolver: MessageResolver = {
+            const languages = [...preferredLanguages];
+            let language = preferredLanguages.find(language => !!messagesJson[language]);
+            if (null == language) {
+                languages.push(...defaultLanguages);
+                language = defaultLanguages[0];
+            }
+            const bundleLanguages = localeLookupList(language),
+                bundle = _.defaults({}, ...bundleLanguages.map(locale => messagesJson[locale] || {}));
+            return freeze({
+                resolver: {
                     resolve: _.partial(resolveMessage, key => bundle[key])
-                };
-            return freeze({bundle, resolver});
-        }, [language, messagesJson]);
+                },
+                bundle, languages
+            });
+        }, [defaultLanguages, preferredLanguages, messagesJson]);
+    const {languages: [language]} = context;
     useEffect(() => {
         const {bundle} = context;
         console.debug(`Loaded [${Object.keys(bundle).length}] messages for language [${language}].`, _.sortBy(Object.entries(bundle), 0));

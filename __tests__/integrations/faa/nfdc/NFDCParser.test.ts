@@ -8,10 +8,10 @@ describe("NFDCParser", () => {
     test("parseAirports()", async () => {
         const [[, source]] = await readResources("./integrations/faa/nfdc/18_May_2023_CSV.zip"),
             zip = await jszip.loadAsync(source),
-            airports = _.sortBy(await instance.parseAirports("2023-05-18", zip.file("APT_BASE.csv")), "ident"),
-            msn = airports.filter(a => "MSN" === a.ident)[0]!;
-        expect(airports.length).toBe(19955);
-        expect(msn).toStrictEqual({
+            airports = _.sortBy(await instance.parseAirports(zip.file("APT_BASE.csv")), "ident"),
+            madison = airports.filter(a => "MSN" === a.ident)[0]!,
+            moriarty = airports.filter(a => "0E0" === a.ident)[0]!;
+        expect(madison).toStrictEqual({
             cityName: 'MADISON',
             coordinates: {
                 latitude: 43.13987913,
@@ -21,17 +21,32 @@ describe("NFDCParser", () => {
             elevation: 886.6,
             icaoIdent: "KMSN",
             ident: "MSN",
-            "key": "2023-05-18.MSN",
             name: "DANE COUNTY RGNL/TRUAX FLD",
             ownership: "public",
             stateCode: "WI",
             stateName: "WISCONSIN"
         });
+
+        /* By default, PapaParse interprets "0E0" as a number (0.0e0); verify that the parser config avoids this. */
+        expect(moriarty).toStrictEqual({
+            cityName: "MORIARTY",
+            coordinates: {
+                "latitude": 34.97816666,
+                "longitude": -106.00002777,
+            },
+            countryCode: "US",
+            elevation: 6204.2,
+            ident: "0E0",
+            name: "MORIARTY MUNI",
+            ownership: "public",
+            stateCode: "NM",
+            stateName: "NEW MEXICO"
+        });
     });
     test("parseWeatherStations()", async () => {
         const [[, source]] = await readResources("./integrations/faa/nfdc/18_May_2023_CSV.zip"),
             zip = await jszip.loadAsync(source),
-            stations = await instance.parseWeatherStations("2023-05-18", zip.file("AWOS.csv")),
+            stations = await instance.parseWeatherStations(zip.file("AWOS.csv")),
             sortedStations = _.sortBy(stations, "ident"),
             olg = sortedStations.filter(next => "OLG" === next.ident)[0]!,
             types = _.uniq(_.map(sortedStations, "type")).sort();
@@ -40,7 +55,6 @@ describe("NFDCParser", () => {
             cityName: "SOLON SPRINGS",
             countryCode: "US",
             ident: "OLG",
-            "key": "2023-05-18.OLG",
             coordinates: {
                 latitude: 46.31531666,
                 longitude: -91.81826111
