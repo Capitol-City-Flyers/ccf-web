@@ -89,9 +89,6 @@ export default function (env: Environment) {
             flights: {
                 inFlightInterval: {minute: 5},
                 notInFlightInterval: {minute: 15}
-            },
-            reservations: {
-                interval: {minute: 15}
             }
         }
     } satisfies Config;
