@@ -1,7 +1,7 @@
-import {useEffect, useState} from "react";
-import {produce} from "immer";
+import {useCallback, useEffect, useMemo, useState} from "react";
+import {freeze, produce} from "immer";
 import _ from "lodash";
-import {DurationLike, Interval} from "luxon";
+import {DateTime, DurationLike, Interval} from "luxon";
 import {nowUTC, Periodicity, periodInterval} from "../../utilities/date-utils";
 
 export interface DatasetSyncProps {
@@ -13,25 +13,43 @@ export interface DatasetSyncProps {
 
 export default function DatasetSync(props: DatasetSyncProps) {
     const {dataset, lead, period, segments} = props,
-        [available, updateAvailable] = useState<Array<Interval>>([periodInterval(period, nowUTC())]);
+        initialState = useMemo<DatasetSyncState>(() => freeze({
+            available: [periodInterval(period, nowUTC())],
+            expired: []
+        }, true), []),
+        [state, updateState] = useState(initialState);
 
-    /* Add the next cycle to the available array when it becomes available. */
+    /* Update the available and expired cycles. */
+    const updateCycles = useCallback((reference: DateTime) => {
+        updateState(previous => produce(previous, draft => {
+            const {available} = draft;
+            draft.expired.push(..._.remove(available, ({end}) => end <= reference));
+            if (1 === available.length) {
+                const next = periodInterval(period, reference, 1);
+                if (next.start.minus(lead) <= reference) {
+                    available.push(next);
+                }
+            }
+        }));
+    }, [updateState]);
+
+    /* Trigger updateCycles() at the appropriate time. */
+    const {available} = state;
     useEffect(() => {
         const now = nowUTC(),
             [{end}] = available,
-            delay = now.diff(end.minus(lead)),
-            timeout = setTimeout(() => {
-                updateAvailable(previous => produce(previous, draft => {
-                    draft.push(periodInterval(period, now, 1));
-                }));
-            }, Math.max(0, delay.toMillis()));
+            cutoff = end.minus(lead),
+            delay = now <= lead ? cutoff.diff(now) : end.diff(now);
+        const timeout = setTimeout(() => {
+            updateCycles(nowUTC());
+        }, Math.max(0, delay.toMillis()));
         return () => clearTimeout(timeout);
     }, [available[0].toISO()]);
 
-    /* Remove the current cycle from the available array when it expires. */
-    useEffect(() => {
-
-    }, [available[0].end.toMillis()]);
-
     return null;
+}
+
+interface DatasetSyncState {
+    available: Array<Interval>;
+    expired: Array<Interval>;
 }
