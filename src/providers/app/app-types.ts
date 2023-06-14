@@ -3,7 +3,7 @@ import {freeze} from "immer";
 import {DateTime} from "luxon";
 import {Config, Environment} from "../../config-types";
 import {GeoPosition} from "../../navigation/navigation-types";
-import {NFDCCycle, NFDCSegment} from "../../integrations/faa/nfdc/nfdc-types";
+import {SyncStatus} from "../sync/sync-types";
 
 export interface ProviderComponentProps {
     config: Config;
@@ -112,7 +112,6 @@ export type AppStateAction =
     | DeviceIdAssigned
     | DevicePrefsChanged
     | IdentityPrefsChanged
-    | NFDCSegmentCompleted
     | OnlineStatusChanged
     | PositionStatusChanged
     | StateRestored
@@ -147,11 +146,28 @@ export interface StatusState {
     device?: DeviceStatus;
 
     /**
+     * Initialization tasks which haven't been completed yet.
+     *
+     * * `state`: restore previous state from local storage (if any.)
+     */
+    initializing?:
+        | Array<"state">;
+
+    /**
      * Is the device online?
      */
     online: boolean;
 
     position?: GeoPosition;
+
+    /**
+     * Has the application reached *ready* state? This is `false` until all initialization tasks are complete.
+     *
+     * @see initializing
+     */
+    ready: boolean;
+
+    sync: SyncStatus;
 
     tasks: Record<string, BackgroundTask>;
 
@@ -178,6 +194,7 @@ export interface StoredAppState {
     status: {
         device: Pick<DeviceStatus, "id">;
         position?: StatusState["position"];
+        sync: StatusState["sync"];
     };
 }
 
@@ -289,14 +306,6 @@ interface WorkerStatusChanged {
 interface PositionStatusChanged {
     kind: "positionStatusChanged";
     payload: GeoPosition;
-}
-
-interface NFDCSegmentCompleted {
-    kind: "nfdcSegmentCompleted";
-    payload: {
-        cycle: NFDCCycle;
-        segment: NFDCSegment;
-    }
 }
 
 interface OnlineStatusChanged {

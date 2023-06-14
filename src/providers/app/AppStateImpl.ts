@@ -3,6 +3,7 @@ import _ from "lodash";
 import {nowUTC} from "../../utilities/date-utils";
 import type {Config, Environment} from "../../config-types";
 import type {AppState, AppStateAction, AuthState, PrefsState, StatusState, StoredAppState} from "./app-types";
+import {WritableDraft} from "immer/src/types/types-external";
 
 /**
  * {@link AppStateImpl} is the implementation of the {@link AppState} interface.
@@ -18,6 +19,70 @@ export class AppStateImpl implements AppState {
         this.auth = initial.auth;
         this.prefs = initial.prefs;
         this.status = initial.status;
+    }
+
+    /**
+     * Create a {@link StoredAppState} containing persistent data from this state. The following items are included:
+     * * `status.device.id` is always stored.
+     * * `status.position` is stored if geolocation is enabled.
+     * * `prefs`, except `identity`, is always stored.
+     * * `auth.credentials.username` and `auth.roles` (as `[unidentified]`) is stored for auth retention `saveUsername`.
+     * * `auth.credentials.password`, `auth.roles` (except `fullyAuthenticated`), and `prefs.identity` are stored for
+     *   auth retention `stayLoggedIn`.
+     * * `auth.roles` is stored as `[unidentified]` *except* in the `stayLoggedIn` case.
+     */
+    toStoredState() {
+        const {auth, prefs, status} = this,
+            {auth: {retention}, device: {enableGeolocation}, identity} = prefs,
+            {credentials} = auth;
+        return freeze<StoredAppState>(_.merge({
+            prefs: _.omit(prefs, "identity"),
+            status: _.pick(status, ["device", "sync", ...[enableGeolocation ? "position" : []]])
+        }, "saveUsername" === retention && credentials && {
+            auth: {
+                credentials: {
+                    username: credentials.username
+                },
+                roles: ["unidentified"]
+            }
+        }, "stayLoggedIn" === retention && credentials?.password && {
+            auth: {
+                roles: auth.roles.filter(role => "fullyAuthenticated" !== role),
+                credentials
+            },
+            prefs: {identity}
+        }) as StoredAppState, true);
+    }
+
+    /**
+     * Create an initial state by merging the default state with applicable configuration items.
+     *
+     * @param env the environment.
+     * @param config the application configuration.
+     */
+    static initial(env: Environment, config: Config) {
+        const build = "_build" === env;
+        return freeze(new AppStateImpl(_.cloneDeep({
+            auth: {
+                roles: config.auth.defaultRoles
+            },
+            prefs: _.merge({}, config.defaults.prefs, !build && window.navigator.languages && {
+                ui: {
+                    languages: window.navigator.languages
+                }
+            }),
+            status: {
+                initializing: ["state"],
+                online: !build && window.navigator.onLine,
+                ready: false,
+                sync: {
+                    datasets: []
+                },
+                tasks: {},
+                visible: !build && "visible" === window.document.visibilityState,
+                worker: "undetermined"
+            }
+        })), true);
     }
 
     /**
@@ -83,11 +148,12 @@ export class AppStateImpl implements AppState {
             case "stateRestored":
                 return produce(previous, draft => {
                     const restored = action.payload,
-                        {prefs, status: {device, position}} = restored,
+                        {prefs, status: {device, position, sync}} = restored,
                         {device: {enableGeolocation}} = prefs;
                     _.merge(draft, {
                         status: {
                             device,
+                            sync,
                             ...(enableGeolocation && position ? {position} : {})
                         },
                         prefs
@@ -109,6 +175,7 @@ export class AppStateImpl implements AppState {
                             }
                         }
                     }
+                    initializationComplete(draft, "state");
                 });
             case "taskCompleted":
                 return produce(previous, draft => {
@@ -131,63 +198,23 @@ export class AppStateImpl implements AppState {
         }
         throw Error("Unsupported action.");
     }
+}
 
-    /**
-     * Create an initial state by merging the default state with applicable configuration items.
-     *
-     * @param env the environment.
-     * @param config the application configuration.
-     */
-    static initial(env: Environment, config: Config) {
-        const build = "_build" === env;
-        return freeze(new AppStateImpl(_.cloneDeep({
-            auth: {
-                roles: config.auth.defaultRoles
-            },
-            prefs: _.merge({}, config.defaults.prefs, !build && window.navigator.languages && {
-                ui: {
-                    languages: window.navigator.languages
-                }
-            }),
-            status: {
-                worker: "undetermined",
-                online: !build && window.navigator.onLine,
-                visible: !build && "visible" === window.document.visibilityState,
-                tasks: {}
-            }
-        })), true);
-    }
-
-    /**
-     * Create a {@link StoredAppState} containing persistent data from this state. The following items are included:
-     * * `status.device.id` is always stored.
-     * * `status.position` is stored if geolocation is enabled.
-     * * `prefs`, except `identity`, is always stored.
-     * * `auth.credentials.username` and `auth.roles` (as `[unidentified]`) is stored for auth retention `saveUsername`.
-     * * `auth.credentials.password`, `auth.roles` (except `fullyAuthenticated`), and `prefs.identity` are stored for
-     *   auth retention `stayLoggedIn`.
-     * * `auth.roles` is stored as `[unidentified]` *except* in the `stayLoggedIn` case.
-     */
-    toStoredState() {
-        const {auth, prefs, status} = this,
-            {auth: {retention}, device: {enableGeolocation}, identity} = prefs,
-            {credentials} = auth;
-        return freeze<StoredAppState>(_.merge({
-            prefs: _.omit(prefs, "identity"),
-            status: _.pick(status, ["device", ...[enableGeolocation ? "position" : []]])
-        }, "saveUsername" === retention && credentials && {
-            auth: {
-                credentials: {
-                    username: credentials.username
-                },
-                roles: ["unidentified"]
-            }
-        }, "stayLoggedIn" === retention && credentials?.password && {
-            auth: {
-                roles: auth.roles.filter(role => "fullyAuthenticated" !== role),
-                credentials
-            },
-            prefs: {identity}
-        }) as StoredAppState, true);
+/**
+ * Remove an item from the initialization task list (if it is present.) If the list becomes empty, set the `ready`
+ * flag to `true`.
+ *
+ * @param draft the draft to update.
+ * @param task the task to remove.
+ * @private
+ */
+function initializationComplete(draft: WritableDraft<AppState>, task: StatusState["initializing"][number]) {
+    const {status: {initializing}} = draft;
+    if (initializing) {
+        _.pull(initializing, task);
+        if (_.isEmpty(initializing)) {
+            delete draft.status.initializing;
+            draft.status.ready = true;
+        }
     }
 }

@@ -30,6 +30,10 @@ export function useAppState() {
     return useApp().state;
 }
 
+export function useAppStatus() {
+    return useAppState().status;
+}
+
 export function useConfig() {
     return useApp().config;
 }
