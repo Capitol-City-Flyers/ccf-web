@@ -3,7 +3,7 @@ import {freeze} from "immer";
 import {DateTime} from "luxon";
 import {Config, Environment} from "../../config-types";
 import {GeoPosition} from "../../navigation/navigation-types";
-import {SyncStatus} from "../sync/sync-types";
+import {DatasetSync, SyncStatus} from "../sync/sync-types";
 
 export interface ProviderComponentProps {
     config: Config;
@@ -109,6 +109,9 @@ export type AppStateAction =
     | AuthChanged
     | AuthLoggedOut
     | AuthRetentionPrefsChanged
+    | DatasetCycleAvailable
+    | DatasetCycleRemoved
+    | DatasetCycleSegmentImported
     | DeviceIdAssigned
     | DevicePrefsChanged
     | IdentityPrefsChanged
@@ -143,6 +146,8 @@ export interface PrefsState {
  * Application, device, and network status.
  */
 export interface StatusState {
+    client: ClientStatus;
+
     device?: DeviceStatus;
 
     /**
@@ -206,6 +211,16 @@ interface AuthPrefs {
         | "none"
         | "saveUsername"
         | "stayLoggedIn";
+}
+
+export interface ClientStatus {
+
+    /**
+     * NextJS build ID, absent during build, `development` when running in the dev server.
+     */
+    buildId?:
+        | "development"
+        | string;
 }
 
 /**
@@ -281,6 +296,23 @@ interface AuthLoggedOut {
 interface AuthRetentionPrefsChanged {
     kind: "authRetentionPrefsChanged";
     payload: PrefsState["auth"]["retention"];
+}
+
+interface DatasetCycleAvailable {
+    kind: "datasetCycleAvailable";
+    payload: Pick<DatasetSync, "cycle" | "dataset">;
+}
+
+interface DatasetCycleRemoved {
+    kind: "datasetCycleRemoved";
+    payload: Pick<DatasetSync, "cycle" | "dataset">;
+}
+
+interface DatasetCycleSegmentImported {
+    kind: "datasetCycleSegmentImported";
+    payload:
+        & Pick<DatasetSync, "cycle" | "dataset">
+        & { segment: DatasetSync["segments"][number] };
 }
 
 interface DeviceIdAssigned {

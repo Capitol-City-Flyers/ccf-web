@@ -1,15 +1,10 @@
 import {GeoCoordinates} from "../../../navigation/navigation-types";
 import {freeze} from "immer";
-import {DateTime} from "luxon";
 
 export const NASR_SEGMENTS = freeze([
     "airports",
     "weatherStations"
 ] as const);
-
-export type NASRSegment = typeof NASR_SEGMENTS[number];
-
-export type NASRCycle = ReturnType<DateTime["toISODate"]>;
 
 export interface WeatherStation {
     cityName: string;

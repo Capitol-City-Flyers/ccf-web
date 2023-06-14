@@ -2,7 +2,6 @@ import {DateTime, Interval} from "luxon";
 import {
     LocalDateFormat,
     DateRange,
-    cycleInterval,
     excludedRanges,
     julianDay,
     periodInterval,
@@ -12,7 +11,33 @@ import {
     toTransitions,
 } from "../../src/utilities/date-utils";
 
+function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = deg2rad(lon2-lon1);
+    var a =
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon/2) * Math.sin(dLon/2)
+    ;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c; // Distance in km
+    return d;
+}
+
+function deg2rad(deg) {
+    return deg * (Math.PI/180)
+}
+
 describe("DateUtils", () => {
+    test("Testing", () => {
+        const madison = [ 43.073051, -89.401230] as const,
+            pds = [43.286933, -89.724012] as const;
+
+        const distance = getDistanceFromLatLonInKm(...madison, ...pds);
+        console.log(distance);
+    });
+
     describe("periodInterval()", () => {
         describe("for a simple period in days", () => {
             const periodicity = {
@@ -55,69 +80,6 @@ describe("DateUtils", () => {
                     interval = periodInterval(periodicity, reference, 5);
                 expect(interval.toISO()).toBe("2024-07-01T00:00:00.000Z/2024-10-01T00:00:00.000Z");
             });
-        });
-    });
-    // test("Test", () => {
-    //     ,
-    //         reference = nowUTC(),
-    //         diff = base.diff(reference);
-    //
-    //     const orderedUnits = freeze<Array<DurationUnit>>(["years",
-    //         "quarters",
-    //         "months",
-    //         "weeks",
-    //         "days",
-    //         "hours",
-    //         "minutes",
-    //         "seconds",
-    //         "milliseconds"]);
-    //     const offset = 0;
-    //     const largestUnitIndex = orderedUnits.findIndex(unit => !!duration[unit]),
-    //         largestUnit = orderedUnits[largestUnitIndex],
-    //         diffInLargestUnit = reference.diff(base, largestUnit)[largestUnit],
-    //         offsetInLargestUnit = Math.floor(diffInLargestUnit / duration[largestUnit]),
-    //         start = base.plus({[largestUnit]: duration[largestUnit] * (offset + offsetInLargestUnit)});
-    //     let value = start;
-    //     for (let i = largestUnitIndex + 1; i < orderedUnits.length; i += 1) {
-    //         const unit = orderedUnits[i];
-    //         if (!!duration[unit]) {
-    //             value = value.plus({[orderedUnits[i]]: duration[unit] * (offset + offsetInLargestUnit)});
-    //         }
-    //     }
-    //     console.log(value.toISO());
-    //
-    //
-    //
-    //
-    //     // console.log("Offset", offset);
-    // });
-
-    describe("cycleInterval()", () => {
-        const base = DateTime.fromISO("2023-04-20T00:00:00Z");
-        test("Current, at end of cycle", () => {
-            expect(cycleInterval(base, 28, DateTime.fromISO("2023-05-17T23:59:59.999Z")))
-                .toStrictEqual(base.until(base.plus({days: 28})));
-        });
-        test("Current, at start of cycle", () => {
-            expect(cycleInterval(base, 28, base)).toStrictEqual(base.until(base.plus({days: 28})));
-        });
-        test("Next, at end of cycle", () => {
-            const start = DateTime.fromISO("2023-05-18T00:00:00Z");
-            expect(cycleInterval(base, 28, DateTime.fromISO("2023-05-17T23:59:59.999Z"), 1))
-                .toStrictEqual(start.until(start.plus({days: 28})));
-        });
-        test("Next, at start of cycle", () => {
-            const start = DateTime.fromISO("2023-05-18T00:00:00Z");
-            expect(cycleInterval(base, 28, base, 1)).toStrictEqual(start.until(start.plus({days: 28})));
-        });
-        test("Previous, at end of cycle", () => {
-            const start = DateTime.fromISO("2023-03-23T00:00:00Z");
-            expect(cycleInterval(base, 28, DateTime.fromISO("2023-05-17T23:59:59.999Z"), -1))
-                .toStrictEqual(start.until(start.plus({days: 28})));
-        });
-        test("Previous, at start of cycle", () => {
-            const start = DateTime.fromISO("2023-03-23T00:00:00Z");
-            expect(cycleInterval(base, 28, base, -1)).toStrictEqual(start.until(start.plus({days: 28})));
         });
     });
     describe("julianDay()", () => {

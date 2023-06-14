@@ -2,7 +2,15 @@ import {castDraft, freeze, immerable, produce} from "immer";
 import _ from "lodash";
 import {nowUTC} from "../../utilities/date-utils";
 import type {Config, Environment} from "../../config-types";
-import type {AppState, AppStateAction, AuthState, PrefsState, StatusState, StoredAppState} from "./app-types";
+import type {
+    AppState,
+    AppStateAction,
+    AuthState,
+    ClientStatus,
+    PrefsState,
+    StatusState,
+    StoredAppState
+} from "./app-types";
 import {WritableDraft} from "immer/src/types/types-external";
 
 /**
@@ -23,6 +31,7 @@ export class AppStateImpl implements AppState {
 
     /**
      * Create a {@link StoredAppState} containing persistent data from this state. The following items are included:
+     * * `status.client` is always stored.
      * * `status.device.id` is always stored.
      * * `status.position` is stored if geolocation is enabled.
      * * `prefs`, except `identity`, is always stored.
@@ -37,7 +46,7 @@ export class AppStateImpl implements AppState {
             {credentials} = auth;
         return freeze<StoredAppState>(_.merge({
             prefs: _.omit(prefs, "identity"),
-            status: _.pick(status, ["device", "sync", ...[enableGeolocation ? "position" : []]])
+            status: _.pick(status, ["client", "device", "sync", ...[enableGeolocation ? "position" : []]])
         }, "saveUsername" === retention && credentials && {
             auth: {
                 credentials: {
@@ -59,8 +68,9 @@ export class AppStateImpl implements AppState {
      *
      * @param env the environment.
      * @param config the application configuration.
+     * @param client the client status.
      */
-    static initial(env: Environment, config: Config) {
+    static initial(env: Environment, config: Config, client: ClientStatus = {}) {
         const build = "_build" === env;
         return freeze(new AppStateImpl(_.cloneDeep({
             auth: {
@@ -80,7 +90,8 @@ export class AppStateImpl implements AppState {
                 },
                 tasks: {},
                 visible: !build && "visible" === window.document.visibilityState,
-                worker: "undetermined"
+                worker: "undetermined",
+                client
             }
         })), true);
     }
@@ -108,6 +119,25 @@ export class AppStateImpl implements AppState {
             case "authRetentionPrefsChanged":
                 return produce(previous, draft => {
                     draft.prefs.auth.retention = action.payload;
+                });
+            case "datasetCycleAvailable":
+                return produce(previous, draft => {
+                    const {dataset, cycle} = action.payload;
+                    draft.status.sync.datasets.push({
+                        segments: [],
+                        cycle, dataset
+                    });
+                });
+            case "datasetCycleRemoved":
+                return produce(previous, draft => {
+                    const {dataset, cycle} = action.payload;
+                    _.remove(draft.status.sync.datasets, status => status.dataset === dataset && status.cycle === cycle);
+                });
+            case "datasetCycleSegmentImported":
+                return produce(previous, draft => {
+                    const {dataset, cycle, segment} = action.payload,
+                        {segments} = draft.status.sync.datasets.find(status => status.dataset === dataset && status.cycle === cycle);
+                    segments.push(segment);
                 });
             case "deviceIdAssigned":
                 return produce(previous, draft => {

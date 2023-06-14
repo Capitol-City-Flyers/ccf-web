@@ -7,7 +7,15 @@ export interface Periodicity {
     duration: DurationLike;
 }
 
-
+/**
+ * Determine the actual date/time interval covered by the current entry of a periodic sequence at a `reference`
+ * date/time.
+ *
+ * @param period the period definition.
+ * @param reference the reference date/time.
+ * @param offset the period offset, `0` for the period *at* the reference date/time, `-1` for the period prior to that
+ * period, `2` for the second period after, and so forth.
+ */
 export function periodInterval(period: Periodicity, reference: DateTime, offset: number = 0) {
     const {base} = period,
         duration = Duration.fromDurationLike(period.duration),

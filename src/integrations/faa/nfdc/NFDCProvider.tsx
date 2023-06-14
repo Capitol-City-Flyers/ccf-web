@@ -1,27 +1,35 @@
-import {PropsWithChildren} from "react";
+import {type PropsWithChildren, useMemo} from "react";
+import {type CreateAxiosDefaults, AxiosHeaders} from "axios";
 import {freeze} from "immer";
-import {DateTime, Duration} from "luxon";
 import {ProviderComponentProps} from "../../../providers/app/app-types";
-import PeriodicDatasetSync, {PeriodicDatasetSyncProps} from "../../../providers/sync/PeriodicDatasetSync";
-import {Periodicity} from "../../../utilities/date-utils";
-import {NASR_SEGMENTS} from "./nfdc-types";
+import {useAxiosInstance} from "../../../providers/axios/AxiosInstanceContext";
+import {useDatabase} from "../../../providers/database/DatabaseContext";
+import {validateIn} from "../../../utilities/array-utils";
+import NASRSync from "./NASRSync";
+import {NFDCClient} from "./NFDCClient";
 
+/**
+ * {@link NFDCProvider} creates an {@link NFDCClient} for accessing the FAA NFDC datasets and configures synchronization
+ * to the local database.
+ *
+ * @param props the component properties.
+ * @constructor
+ */
 export default function NFDCProvider(props: PropsWithChildren<ProviderComponentProps>) {
-    const {children, config} = props;
+    const {children, config: {integration: {faa: {nfdc: {baseURL}}}}} = props,
+        axiosConfig = useMemo<CreateAxiosDefaults>(() => freeze({
+            baseURL: baseURL.href,
+            headers: new AxiosHeaders().setAccept("application/zip"),
+            responseType: "arraybuffer",
+            validateStatus: validateIn(200)
+        }, true), [baseURL]),
+        axios = useAxiosInstance(axiosConfig),
+        client = useMemo(() => NFDCClient.create(axios), [axios]),
+        db = useDatabase();
     return (
         <>
-            <PeriodicDatasetSync dataset="faaNasr"
-                                 lead={ONE_WEEK}
-                                 period={NASR_PERIOD}
-                                 segments={NASR_SEGMENTS}/>
+            <NASRSync client={client} db={db}/>
             {children}
         </>
     );
 }
-
-const ONE_WEEK = freeze(Duration.fromDurationLike({minutes: 1}));
-
-const NASR_PERIOD = freeze<Periodicity>({
-    base: DateTime.fromISO("2023-05-18T00:00:00Z", {setZone: true}),
-    duration: {minutes: 2}
-}, true);
