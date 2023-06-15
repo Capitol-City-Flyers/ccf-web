@@ -31,7 +31,6 @@ export class AppStateImpl implements AppState {
 
     /**
      * Create a {@link StoredAppState} containing persistent data from this state. The following items are included:
-     * * `status.client` is always stored.
      * * `status.device.id` is always stored.
      * * `status.position` is stored if geolocation is enabled.
      * * `prefs`, except `identity`, is always stored.
@@ -46,7 +45,7 @@ export class AppStateImpl implements AppState {
             {credentials} = auth;
         return freeze<StoredAppState>(_.merge({
             prefs: _.omit(prefs, "identity"),
-            status: _.pick(status, ["client", "device", "sync", ...[enableGeolocation ? "position" : []]])
+            status: _.pick(status, ["device", "sync", ...[enableGeolocation ? "position" : []]])
         }, "saveUsername" === retention && credentials && {
             auth: {
                 credentials: {

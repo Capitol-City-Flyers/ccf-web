@@ -3,8 +3,8 @@ import React, {
     ComponentType,
     PropsWithChildren,
     ReactNode,
-    useCallback,
-    useMemo,
+    useCallback, useLayoutEffect,
+    useMemo, useRef,
     useState
 } from "react";
 import ActionButton from "./ActionButton";
@@ -25,16 +25,31 @@ export function PanelButton({label, panel}: PropsWithChildren<PanelButtonProps>)
                 return (<Panel/>);
             }
             return panel as ReactNode;
-        }, [panel, panelOpen]);
+        }, [panel, panelOpen]),
+        containerRef = useRef<HTMLDivElement>();
+
+    const onDocumentMouseDown = useCallback((ev: MouseEvent) => {
+        setPanelOpen(false);
+    }, []);
+
     const onButtonClick = useCallback(() => {
         setPanelOpen(open => !open);
     }, [setPanelOpen]);
+
+    useLayoutEffect(() => {
+        if (panelOpen) {
+            document.addEventListener("mousedown", onDocumentMouseDown);
+            return () => document.removeEventListener("mousedown", onDocumentMouseDown);
+        }
+    }, [panelOpen]);
+
     return (
         <div className="relative self-center">
-            <ActionButton className={panelOpen ? "bg-blue-500 rounded-b-none" : ""} onClick={onButtonClick}>{label}</ActionButton>
+            <ActionButton className={panelOpen ? "bg-blue-500 rounded-b-none" : ""}
+                          onClick={onButtonClick}>{label}</ActionButton>
             {panelOpen && (
-                <div
-                    className="bg-blue-50 border border-r border-t-2 border-t-blue-500 border-blue-200 rounded-box rounded-tr-none drop-shadow-xl absolute right-0 mt-1 z-30">
+                <div ref={containerRef}
+                     className="bg-blue-50 border border-r border-t-2 border-t-blue-500 border-blue-200 rounded-box rounded-tr-none drop-shadow-xl absolute right-0 mt-1 z-30">
                     {panelElement}
                 </div>
             )}

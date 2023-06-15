@@ -1,10 +1,11 @@
 import {useMemo} from "react";
 import {freeze} from "immer";
 import _ from "lodash";
-import Layout from "../components/layout/Layout";
+import {useRouter} from "next/router";
 import AppHead from "../components/app/AppHead";
-import AppProvider from "../providers/app/AppProvider";
+import Layout from "../components/layout/Layout";
 import loadConfig from "../config";
+import AppProvider from "../providers/app/AppProvider";
 import type {Config, Environment} from "../config-types";
 import type {ProviderComponentProps} from "../providers/app/app-types";
 
@@ -19,8 +20,9 @@ import "../../styles/globals.css";
  * @constructor
  */
 export default function App({Component, pageProps}) {
-    const build = "undefined" === typeof window,
-        env: Environment = build ? "_build" : new URL(window.document.baseURI),
+    const {basePath} = useRouter(),
+        build = "undefined" === typeof window,
+        env: Environment = build ? "_build" : new URL(basePath || "/", new URL(window.document.baseURI)),
         config = useMemo<Config>(() => freeze(_.cloneDeep(loadConfig(env)), true), []);
 
     /* Coalesce all provider components and bind them to standard properties. */
@@ -36,7 +38,7 @@ export default function App({Component, pageProps}) {
     }, []);
     return (
         <Providers>
-            <AppHead />
+            <AppHead/>
             <Layout>
                 <Component {...pageProps}/>
             </Layout>

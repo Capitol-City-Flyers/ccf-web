@@ -7,15 +7,17 @@ export default function MemberMenu() {
     const dispatch = useAppDispatch(),
         messages = useMessages({
             logout: "cin.action.logout",
-            preferences: "cin.title.preferences"
+            preferences: "cin.title.preferences",
+            profile: "cin.title.profile"
         });
     const onLogoutClick = useCallback(() => {
         dispatch({kind: "authLoggedOut"});
     }, [dispatch]);
     return (
-        <ul className="menu menu-compact w-64">
-            <li><Link className="rounded-tl-box hover:bg-blue-100" href="/members/preferences">{messages.preferences}</Link></li>
-            <li><a className="rounded-b-box hover:bg-blue-100" onClick={onLogoutClick}>{messages.logout}</a></li>
+        <ul className="menu p-0 w-64">
+            <li><Link className="select-none rounded-b-none rounded-tl-box rounded-tr-none" href="/members">{messages.profile}</Link></li>
+            <li><Link className="select-none rounded-none" href="/members/preferences">{messages.preferences}</Link></li>
+            <li><a className="select-none rounded-b-box rounded-t-none" onClick={onLogoutClick}>{messages.logout}</a></li>
         </ul>
     );
 }

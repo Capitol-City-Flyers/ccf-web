@@ -32,6 +32,7 @@ export default function AppStatePersister() {
     }, []);
 
     /* Update persistent state when applicable state changes occur. */
+    const {status} = state;
     useEffect(() => {
         updateStoredState(previousStoredState => {
             const updatedStoredState = state.toStoredState();
@@ -40,7 +41,7 @@ export default function AppStatePersister() {
             }
             return updatedStoredState;
         });
-    }, [state.auth, state.prefs, state.status.client, state.status.device, state.status.position, state.status.sync]);
+    }, [state.auth, state.prefs, status.device, status.position, status.sync]);
 
     /* Update local storage when persistent state changes occur. */
     useEffect(() => {

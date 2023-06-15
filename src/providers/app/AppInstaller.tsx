@@ -30,16 +30,17 @@ export default function AppInstaller() {
                         .then(registration => setWorkerState(null == registration ? "notInstalled" : "installed"));
                 } else if (install !== (workerState === "installed" || workerState === "installationFailed")) {
                     if (install) {
-                        serviceWorker.register(workerURL)
-                            .then(registration => {
-                                if (null == registration) {
-                                    setWorkerState("installationFailed");
-                                    console.warn("Attempt to install service worker failed.");
-                                } else {
-                                    setWorkerState("installed");
-                                    console.debug("Installed service worker.");
-                                }
-                            });
+                        serviceWorker.register(workerURL, {
+                            scope: env.pathname
+                        }).then(registration => {
+                            if (null == registration) {
+                                setWorkerState("installationFailed");
+                                console.warn("Attempt to install service worker failed.");
+                            } else {
+                                setWorkerState("installed");
+                                console.debug("Installed service worker.");
+                            }
+                        });
                     } else {
                         serviceWorker.getRegistration(workerURL)
                             .then(registration => {
