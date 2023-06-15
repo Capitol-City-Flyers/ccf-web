@@ -2,41 +2,58 @@ import {DateTime, Interval} from "luxon";
 import {
     LocalDateFormat,
     DateRange,
-    cycleInterval,
     excludedRanges,
     julianDay,
+    periodInterval,
+    nowUTC,
     toFractions,
     toLengthFractions,
-    toTransitions, nowUTC,
+    toTransitions,
 } from "../../src/utilities/date-utils";
 
 describe("DateUtils", () => {
-    describe("cycleInterval()", () => {
-        const base = DateTime.fromISO("2023-04-20T00:00:00Z");
-        test("Current, at end of cycle", () => {
-            expect(cycleInterval(base, 28, DateTime.fromISO("2023-05-17T23:59:59.999Z")))
-                .toStrictEqual(base.until(base.plus({days: 28})));
+    describe("periodInterval()", () => {
+        describe("for a simple period in days", () => {
+            const periodicity = {
+                base: DateTime.fromISO("2023-03-23T00:00:00.000Z", {setZone: true}),
+                duration: {days: 28}
+            };
+            test("with the default offset (zero)", () => {
+                const reference = DateTime.fromISO("2023-05-17T23:59:59.999Z", {setZone: true}),
+                    interval = periodInterval(periodicity, reference);
+                expect(interval.toISO()).toBe("2023-04-20T00:00:00.000Z/2023-05-18T00:00:00.000Z");
+            });
+            test("with a negative offset", () => {
+                const reference = DateTime.fromISO("2023-05-10T00:00:00Z", {setZone: true}),
+                    interval = periodInterval(periodicity, reference, -5);
+                expect(interval.toISO()).toBe("2022-12-01T00:00:00.000Z/2022-12-29T00:00:00.000Z");
+            });
+            test("with a positive offset", () => {
+                const reference = DateTime.fromISO("2023-05-10T00:00:00Z", {setZone: true}),
+                    interval = periodInterval(periodicity, reference, 5);
+                expect(interval.toISO()).toBe("2023-09-07T00:00:00.000Z/2023-10-05T00:00:00.000Z");
+            });
         });
-        test("Current, at start of cycle", () => {
-            expect(cycleInterval(base, 28, base)).toStrictEqual(base.until(base.plus({days: 28})));
-        });
-        test("Next, at end of cycle", () => {
-            const start = DateTime.fromISO("2023-05-18T00:00:00Z");
-            expect(cycleInterval(base, 28, DateTime.fromISO("2023-05-17T23:59:59.999Z"), 1))
-                .toStrictEqual(start.until(start.plus({days: 28})));
-        });
-        test("Next, at start of cycle", () => {
-            const start = DateTime.fromISO("2023-05-18T00:00:00Z");
-            expect(cycleInterval(base, 28, base, 1)).toStrictEqual(start.until(start.plus({days: 28})));
-        });
-        test("Previous, at end of cycle", () => {
-            const start = DateTime.fromISO("2023-03-23T00:00:00Z");
-            expect(cycleInterval(base, 28, DateTime.fromISO("2023-05-17T23:59:59.999Z"), -1))
-                .toStrictEqual(start.until(start.plus({days: 28})));
-        });
-        test("Previous, at start of cycle", () => {
-            const start = DateTime.fromISO("2023-03-23T00:00:00Z");
-            expect(cycleInterval(base, 28, base, -1)).toStrictEqual(start.until(start.plus({days: 28})));
+        describe("for a simple period in quarters", () => {
+            const periodicity = {
+                base: DateTime.fromISO("2023-01-01T00:00:00.000Z", {setZone: true}),
+                duration: {quarters: 1}
+            };
+            test("with the default offset (zero)", () => {
+                const reference = DateTime.fromISO("2023-05-17T23:59:59.999Z", {setZone: true}),
+                    interval = periodInterval(periodicity, reference);
+                expect(interval.toISO()).toBe("2023-04-01T00:00:00.000Z/2023-07-01T00:00:00.000Z");
+            });
+            test("with a negative offset", () => {
+                const reference = DateTime.fromISO("2023-05-10T00:00:00Z", {setZone: true}),
+                    interval = periodInterval(periodicity, reference, -5);
+                expect(interval.toISO()).toBe("2022-01-01T00:00:00.000Z/2022-04-01T00:00:00.000Z");
+            });
+            test("with a positive offset", () => {
+                const reference = DateTime.fromISO("2023-05-10T00:00:00Z", {setZone: true}),
+                    interval = periodInterval(periodicity, reference, 5);
+                expect(interval.toISO()).toBe("2024-07-01T00:00:00.000Z/2024-10-01T00:00:00.000Z");
+            });
         });
     });
     describe("julianDay()", () => {

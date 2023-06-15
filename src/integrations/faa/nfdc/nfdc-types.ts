@@ -1,19 +1,12 @@
 import {GeoCoordinates} from "../../../navigation/navigation-types";
+import {freeze} from "immer";
 
-export interface AirportSummary {
-    cityName: string;
-    coordinates: GeoCoordinates;
-    countryCode: string;
-    elevation: number;
-    icaoIdent?: string;
-    ident: string;
-    name: string;
-    ownership: "public" | "private";
-    stateCode: string;
-    stateName: string;
-}
+export const NASR_SEGMENTS = freeze([
+    "airports",
+    "weatherStations"
+] as const);
 
-export interface AWOSSummary {
+export interface WeatherStation {
     cityName: string;
     coordinates: GeoCoordinates;
     ident: string;
@@ -33,7 +26,7 @@ export interface AWOSSummary {
 
 export interface Airport {
     cityName: string;
-    location: GeoCoordinates;
+    coordinates: GeoCoordinates;
     countryCode: string;
     elevation: number;
     icaoIdent?: string;

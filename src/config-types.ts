@@ -1,7 +1,7 @@
 import {ElementType, PropsWithChildren} from "react";
-import {AircraftIdent, TailNumber} from "./aircraft/aircraft-types";
+import type {DurationLike} from "luxon";
+import type {AircraftIdent} from "./aircraft/aircraft-types";
 import type {PrefsState, ProviderComponentProps, Role} from "./providers/app/app-types";
-import {Duration, DurationLike} from "luxon";
 
 export type Environment =
     | "_build"
@@ -30,6 +30,10 @@ export interface IntegrationConfig {
     faa: {
         nfdc: {
             baseURL: URL;
+            include: Array<
+                | "airports"
+                | "weatherStations"
+            >;
         }
     },
     nominatim: {
@@ -65,7 +69,4 @@ export interface SyncConfig {
          */
         notInFlightInterval: DurationLike;
     };
-    reservations: {
-        interval: DurationLike;
-    }
 }

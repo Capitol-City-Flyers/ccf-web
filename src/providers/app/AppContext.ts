@@ -1,9 +1,9 @@
 import {createContext, Dispatch, useContext, useMemo} from "react";
 import {createRoleResolver} from "./app-utils";
-import type {Config, Environment} from "../../config-types";
-import type {AppState, AppStateAction, Role, RoleResolver, RolesSpec} from "./app-types";
 import {IANAZone, Zone} from "luxon";
 import {DateCalc} from "../../utilities/DateCalc";
+import type {Config, Environment} from "../../config-types";
+import type {AppState, AppStateAction, Role, RoleResolver, RolesSpec} from "./app-types";
 
 export interface AppContext {
     config: Config;
@@ -28,6 +28,10 @@ export function useAppDispatch() {
 
 export function useAppState() {
     return useApp().state;
+}
+
+export function useAppStatus() {
+    return useAppState().status;
 }
 
 export function useConfig() {

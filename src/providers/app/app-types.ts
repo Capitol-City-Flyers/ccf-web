@@ -3,6 +3,7 @@ import {freeze} from "immer";
 import {DateTime} from "luxon";
 import {Config, Environment} from "../../config-types";
 import {GeoPosition} from "../../navigation/navigation-types";
+import {DatasetSync, SyncStatus} from "../sync/sync-types";
 
 export interface ProviderComponentProps {
     config: Config;
@@ -108,6 +109,9 @@ export type AppStateAction =
     | AuthChanged
     | AuthLoggedOut
     | AuthRetentionPrefsChanged
+    | DatasetCycleAvailable
+    | DatasetCycleRemoved
+    | DatasetCycleSegmentImported
     | DeviceIdAssigned
     | DevicePrefsChanged
     | IdentityPrefsChanged
@@ -142,7 +146,17 @@ export interface PrefsState {
  * Application, device, and network status.
  */
 export interface StatusState {
+    client: ClientStatus;
+
     device?: DeviceStatus;
+
+    /**
+     * Initialization tasks which haven't been completed yet.
+     *
+     * * `state`: restore previous state from local storage (if any.)
+     */
+    initializing?:
+        | Array<"state">;
 
     /**
      * Is the device online?
@@ -150,6 +164,15 @@ export interface StatusState {
     online: boolean;
 
     position?: GeoPosition;
+
+    /**
+     * Has the application reached *ready* state? This is `false` until all initialization tasks are complete.
+     *
+     * @see initializing
+     */
+    ready: boolean;
+
+    sync: SyncStatus;
 
     tasks: Record<string, BackgroundTask>;
 
@@ -176,6 +199,7 @@ export interface StoredAppState {
     status: {
         device: Pick<DeviceStatus, "id">;
         position?: StatusState["position"];
+        sync: StatusState["sync"];
     };
 }
 
@@ -187,6 +211,16 @@ interface AuthPrefs {
         | "none"
         | "saveUsername"
         | "stayLoggedIn";
+}
+
+export interface ClientStatus {
+
+    /**
+     * NextJS build ID, absent during build, `development` when running in the dev server.
+     */
+    buildId?:
+        | "development"
+        | string;
 }
 
 /**
@@ -247,7 +281,7 @@ interface IdentityPrefs {
  * User interface preferences.
  */
 interface UiPrefs {
-    language: string;
+    languages: Array<string>;
 }
 
 interface AuthChanged {
@@ -262,6 +296,23 @@ interface AuthLoggedOut {
 interface AuthRetentionPrefsChanged {
     kind: "authRetentionPrefsChanged";
     payload: PrefsState["auth"]["retention"];
+}
+
+interface DatasetCycleAvailable {
+    kind: "datasetCycleAvailable";
+    payload: Pick<DatasetSync, "cycle" | "dataset">;
+}
+
+interface DatasetCycleRemoved {
+    kind: "datasetCycleRemoved";
+    payload: Pick<DatasetSync, "cycle" | "dataset">;
+}
+
+interface DatasetCycleSegmentImported {
+    kind: "datasetCycleSegmentImported";
+    payload:
+        & Pick<DatasetSync, "cycle" | "dataset">
+        & { segment: DatasetSync["segments"][number] };
 }
 
 interface DeviceIdAssigned {

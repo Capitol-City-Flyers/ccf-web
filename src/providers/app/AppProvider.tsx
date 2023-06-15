@@ -8,9 +8,8 @@ import StorageProvider from "../storage/StorageProvider";
 import {appStateContext} from "./AppContext";
 import {AppStateImpl} from "./AppStateImpl";
 import AppStatePersister from "./AppStatePersister";
-import type {ProviderComponentProps} from "./app-types";
+import type {ClientStatus, ProviderComponentProps} from "./app-types";
 import type {AppContext} from "./AppContext";
-import NFDCSynchronizer from "../../integrations/faa/nfdc/NFDCSynchronizer";
 import AppInstaller from "./AppInstaller";
 
 /**
@@ -22,7 +21,21 @@ import AppInstaller from "./AppInstaller";
  */
 export default function AppProvider(props: PropsWithChildren<ProviderComponentProps>) {
     const {children, config, env} = props,
-        initialState = useMemo(() => AppStateImpl.initial(env, config), []),
+        initialState = useMemo(() => {
+            const clientStatus: ClientStatus = {};
+            if ("_build" !== env) {
+                const element = window.document.querySelector<HTMLScriptElement>("script#__NEXT_DATA__");
+                if (null != element) {
+                    try {
+                        const {buildId} = JSON.parse(element.innerHTML);
+                        return AppStateImpl.initial(env, config, {buildId});
+                    } catch (ex) {
+                        console.error("Failed to read NextJS build ID.", ex);
+                    }
+                }
+            }
+            return AppStateImpl.initial(env, config);
+        }, []),
         [state, dispatch] = useReducer(AppStateImpl.reduce, initialState),
         context = useMemo<AppContext>(() => freeze({config, dispatch, env, state}, true), [dispatch, state]);
 
@@ -64,7 +77,6 @@ export default function AppProvider(props: PropsWithChildren<ProviderComponentPr
                         <MessagesProvider>
                             {children}
                         </MessagesProvider>
-                        <NFDCSynchronizer/>
                     </DatabaseProvider>
                 </AxiosProvider>
             </appStateContext.Provider>

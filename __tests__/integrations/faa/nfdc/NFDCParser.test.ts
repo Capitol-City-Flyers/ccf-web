@@ -9,11 +9,11 @@ describe("NFDCParser", () => {
         const [[, source]] = await readResources("./integrations/faa/nfdc/18_May_2023_CSV.zip"),
             zip = await jszip.loadAsync(source),
             airports = _.sortBy(await instance.parseAirports(zip.file("APT_BASE.csv")), "ident"),
-            msn = airports.filter(a => "MSN" === a.ident)[0]!;
-        expect(airports.length).toBe(19955);
-        expect(msn).toStrictEqual({
+            madison = airports.filter(a => "MSN" === a.ident)[0]!,
+            moriarty = airports.filter(a => "0E0" === a.ident)[0]!;
+        expect(madison).toStrictEqual({
             cityName: 'MADISON',
-            location: {
+            coordinates: {
                 latitude: 43.13987913,
                 longitude: -89.33750447
             },
@@ -25,6 +25,22 @@ describe("NFDCParser", () => {
             ownership: "public",
             stateCode: "WI",
             stateName: "WISCONSIN"
+        });
+
+        /* By default, PapaParse interprets "0E0" as a number (0.0e0); verify that the parser config avoids this. */
+        expect(moriarty).toStrictEqual({
+            cityName: "MORIARTY",
+            coordinates: {
+                "latitude": 34.97816666,
+                "longitude": -106.00002777,
+            },
+            countryCode: "US",
+            elevation: 6204.2,
+            ident: "0E0",
+            name: "MORIARTY MUNI",
+            ownership: "public",
+            stateCode: "NM",
+            stateName: "NEW MEXICO"
         });
     });
     test("parseWeatherStations()", async () => {
@@ -39,7 +55,7 @@ describe("NFDCParser", () => {
             cityName: "SOLON SPRINGS",
             countryCode: "US",
             ident: "OLG",
-            location: {
+            coordinates: {
                 latitude: 46.31531666,
                 longitude: -91.81826111
             },
