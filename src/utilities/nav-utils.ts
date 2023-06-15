@@ -67,7 +67,7 @@ function direct_ell(glat1: number, glon1: number, faz: number, s: number) {
     if ((Math.abs(Math.cos(glat1)) < EPS) && !(Math.abs(Math.sin(faz)) < EPS)) {
         throw Error("Only N-S courses are meaningful, starting at a pole!");
     }
-    let f = 1 / WGS84_ELLIPSOID.invf,
+    let f = 1 / WGS84.invf,
         r = 1 - f,
         tu = r * Math.tan(glat1),
         sf = Math.sin(faz),
@@ -87,7 +87,7 @@ function direct_ell(glat1: number, glon1: number, faz: number, s: number) {
     let c = 1. - x;
     c = (x * x / 4. + 1.) / c;
     let d = (0.375 * x * x - 1.) * x;
-    tu = s / (r * WGS84_ELLIPSOID.a * c);
+    tu = s / (r * WGS84.a * c);
     let y = tu;
     c = y + 1;
     let cy, cz, e, sy;
@@ -119,7 +119,7 @@ function direct_ell(glat1: number, glon1: number, faz: number, s: number) {
 
 function crsdist_ell(glat1, glon1, glat2, glon2) {
     const EPS = 0.00000000005,
-        f = 1 / WGS84_ELLIPSOID.invf,
+        f = 1 / WGS84.invf,
         MAXITER = 100;
     if ((glat1 + glat2 === 0) && (Math.abs(glon1 - glon2) === Math.PI)) {
         throw Error("Course and distance between antipodal points is undefined");
@@ -172,7 +172,7 @@ function crsdist_ell(glat1, glon1, glat2, glon2) {
     c = (x * x / 4. + 1.) / c
     d = (0.375 * x * x - 1.) * x
     x = e * cy
-    let s = ((((sy * sy * 4. - 3.) * (1. - e - e) * cz * d / 6. - x) * d / 4. + cz) * sy * d + y) * c * WGS84_ELLIPSOID.a * r
+    let s = ((((sy * sy * 4. - 3.) * (1. - e - e) * cz * d / 6. - x) * d / 4. + cz) * sy * d + y) * c * WGS84.a * r
     return {
         d: s,
         crs12: faz,
@@ -181,10 +181,10 @@ function crsdist_ell(glat1, glon1, glat2, glon2) {
 }
 
 const DEGREES_IN_RADIAN = 180 / Math.PI,
-    RADIANS_IN_DEGREE = Math.PI / 180,
     HALF_PI = Math.PI / 2,
+    RADIANS_IN_DEGREE = Math.PI / 180,
     TWO_PI = 2 * Math.PI,
-    WGS84_ELLIPSOID = freeze({
+    WGS84 = freeze({
         a: 6378.137 / 1.852,
         invf: 298.257223563
     }, true);
