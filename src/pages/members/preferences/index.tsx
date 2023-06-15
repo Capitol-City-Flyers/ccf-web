@@ -10,7 +10,7 @@ export default function Preferences() {
             installLabel: "cin.label.preference.install"
         }),
         {dispatch, state} = useApp(),
-        {prefs: {device}, status: {position}} = state,
+        {prefs: {device}, status: {client: {build}, position}} = state,
         {current: initialState} = useRef(device),
         [form, updateForm] = useState(initialState),
         nominatim = useNominatimClient(),
@@ -58,6 +58,18 @@ export default function Preferences() {
                            onChange={onCheckboxChange}/>&nbsp;{messages.installLabel}
                 </label>
             </div>
+            {build && (
+                <>
+                    {build.version && (
+                        <div>
+                            Version: <em>{build.version}</em>
+                        </div>
+                    )}
+                    <div>
+                        Built: <em>{build.timestamp.setZone("local").toLocaleString({dateStyle: "medium", timeStyle: "long"})} ({build.id})</em>
+                    </div>
+                </>
+            )}
         </main>
     );
 }

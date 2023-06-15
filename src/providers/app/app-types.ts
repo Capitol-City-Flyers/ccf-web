@@ -109,6 +109,7 @@ export type AppStateAction =
     | AuthChanged
     | AuthLoggedOut
     | AuthRetentionPrefsChanged
+    | BuildInfoRetrieved
     | DatasetCycleAvailable
     | DatasetCycleRemoved
     | DatasetCycleSegmentImported
@@ -150,44 +151,11 @@ export interface StatusState {
 
     device?: DeviceStatus;
 
-    /**
-     * Initialization tasks which haven't been completed yet.
-     *
-     * * `state`: restore previous state from local storage (if any.)
-     */
-    initializing?:
-        | Array<"state">;
-
-    /**
-     * Is the device online?
-     */
-    online: boolean;
-
     position?: GeoPosition;
-
-    /**
-     * Has the application reached *ready* state? This is `false` until all initialization tasks are complete.
-     *
-     * @see initializing
-     */
-    ready: boolean;
 
     sync: SyncStatus;
 
     tasks: Record<string, BackgroundTask>;
-
-    /**
-     * Is the document visible--not obscured by some other window or tab?
-     */
-    visible: boolean;
-
-    /**
-     * Is the service worker installed?
-     */
-    worker:
-        | "undetermined"
-        | "installed"
-        | "notInstalled";
 }
 
 export interface StoredAppState {
@@ -216,11 +184,47 @@ interface AuthPrefs {
 export interface ClientStatus {
 
     /**
-     * NextJS build ID, absent during build, `development` when running in the dev server.
+     * NextJS build ID and timestamp.
      */
-    buildId?:
-        | "development"
-        | string;
+    build?: {
+        id: | "undetermined"
+            | "development"
+            | string;
+        timestamp: DateTime;
+        version?: string;
+    }
+
+    /**
+     * Initialization tasks which haven't been completed yet.
+     *
+     * * `state`: restore previous state from local storage (if any.)
+     */
+    initializing?: Array<"state">;
+
+    /**
+     * Is the device online?
+     */
+    online: boolean;
+
+    /**
+     * Has the application reached *ready* state? This is `false` until all initialization tasks are complete.
+     *
+     * @see initializing
+     */
+    ready: boolean;
+
+    /**
+     * Is the document visible--not obscured by some other window or tab?
+     */
+    visible: boolean;
+
+    /**
+     * Is the service worker installed?
+     */
+    worker:
+        | "undetermined"
+        | "installed"
+        | "notInstalled";
 }
 
 /**
@@ -298,6 +302,11 @@ interface AuthRetentionPrefsChanged {
     payload: PrefsState["auth"]["retention"];
 }
 
+interface BuildInfoRetrieved {
+    kind: "buildInfoRetrieved";
+    payload: Required<ClientStatus["build"]>;
+}
+
 interface DatasetCycleAvailable {
     kind: "datasetCycleAvailable";
     payload: Pick<DatasetSync, "cycle" | "dataset">;
@@ -332,7 +341,7 @@ interface IdentityPrefsChanged {
 
 interface WorkerStatusChanged {
     kind: "workerStatusChanged";
-    payload: StatusState["worker"];
+    payload: ClientStatus["worker"];
 }
 
 interface PositionStatusChanged {

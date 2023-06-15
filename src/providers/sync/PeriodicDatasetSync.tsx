@@ -65,7 +65,7 @@ export interface PeriodicDatasetSyncProps {
 export default function PeriodicDatasetSync(props: PeriodicDatasetSyncProps) {
     const {dataset, lead, period, segments} = props,
         active = false !== props.active,
-        {dispatch, state: {status: {online, ready, sync: {datasets}}}} = useApp(),
+        {dispatch, state: {status: {client: {online, ready}, sync: {datasets}}}} = useApp(),
         synced = useMemo(() => freeze(_.sortBy(datasets.filter(status => status.dataset === dataset), "cycle").sort(), true), [datasets]);
 
     /* Callback which goes through an array of cycles, compares them against a reference date/time, and removes cycles

@@ -68,9 +68,8 @@ export class AppStateImpl implements AppState {
      *
      * @param env the environment.
      * @param config the application configuration.
-     * @param client the client status.
      */
-    static initial(env: Environment, config: Config, client: ClientStatus = {}) {
+    static initial(env: Environment, config: Config) {
         const build = "_build" === env;
         return freeze(new AppStateImpl(_.cloneDeep({
             auth: {
@@ -82,16 +81,17 @@ export class AppStateImpl implements AppState {
                 }
             }),
             status: {
-                initializing: ["state"],
-                online: !build && window.navigator.onLine,
-                ready: false,
+                client: {
+                    initializing: ["state"],
+                    online: !build && window.navigator.onLine,
+                    ready: false,
+                    visible: !build && "visible" === window.document.visibilityState,
+                    worker: "undetermined",
+                },
                 sync: {
                     datasets: []
                 },
-                tasks: {},
-                visible: !build && "visible" === window.document.visibilityState,
-                worker: "undetermined",
-                client
+                tasks: {}
             }
         })), true);
     }
@@ -119,6 +119,13 @@ export class AppStateImpl implements AppState {
             case "authRetentionPrefsChanged":
                 return produce(previous, draft => {
                     draft.prefs.auth.retention = action.payload;
+                });
+            case "buildInfoRetrieved":
+                return produce(previous, draft => {
+                    const {status: {client}} = draft;
+                    _.assign(client, {
+                        build: action.payload
+                    });
                 });
             case "datasetCycleAvailable":
                 return produce(previous, draft => {
@@ -161,11 +168,11 @@ export class AppStateImpl implements AppState {
                 });
             case "workerStatusChanged":
                 return produce(previous, draft => {
-                    draft.status.worker = action.payload;
+                    draft.status.client.worker = action.payload;
                 });
             case "onlineStatusChanged":
                 return produce(previous, draft => {
-                    draft.status.online = action.payload;
+                    draft.status.client.online = action.payload;
                 });
             case "positionStatusChanged":
                 return produce(previous, draft => {
@@ -223,7 +230,7 @@ export class AppStateImpl implements AppState {
                 });
             case "visibleStatusChanged":
                 return produce(previous, draft => {
-                    draft.status.visible = action.payload;
+                    draft.status.client.visible = action.payload;
                 });
         }
         throw Error("Unsupported action.");
@@ -238,13 +245,14 @@ export class AppStateImpl implements AppState {
  * @param task the task to remove.
  * @private
  */
-function initializationComplete(draft: WritableDraft<AppState>, task: StatusState["initializing"][number]) {
-    const {status: {initializing}} = draft;
+function initializationComplete(draft: WritableDraft<AppState>, task: ClientStatus["initializing"][number]) {
+    const {status: {client: {initializing}}} = draft;
     if (initializing) {
         _.pull(initializing, task);
         if (_.isEmpty(initializing)) {
-            delete draft.status.initializing;
-            draft.status.ready = true;
+            const {status: {client}} = draft;
+            delete client.initializing;
+            client.ready = true;
         }
     }
 }

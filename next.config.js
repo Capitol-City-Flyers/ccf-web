@@ -1,3 +1,4 @@
+const {DateTime} = require("luxon");
 const withPWA = require("next-pwa")({
     dest: "public",
     disable: process.env.NODE_ENV === "development",
@@ -8,13 +9,19 @@ const withPWA = require("next-pwa")({
  * @type {(phase: string) => import("next").NextConfig}
  */
 module.exports = phase => {
-    let config;
+    let config = {
+        publicRuntimeConfig: Object.assign({
+            buildTimestamp: DateTime.now().setZone("UTC").toISO(),
+        }, process.env.CIN_VERSION && {
+            version: process.env.CIN_VERSION
+        })
+    };
     if ("phase-development-server" !== phase) {
-        config = {
+        Object.assign(config, {
             output: "export"
-        }
+        });
     } else {
-        config = {
+        Object.assign(config, {
             rewrites: async () => [{
                 source: "/api/aircraftclubs/:path*",
                 destination: "https://www.aircraftclubs.com/:path*"
@@ -22,7 +29,7 @@ module.exports = phase => {
                 source: "/api/faa/nfdc/:path*",
                 destination: "https://nfdc.faa.gov/:path*"
             }]
-        };
+        });
     }
     return withPWA(config);
 };

@@ -29,7 +29,7 @@ interface FlightsProviderProps {
 export default function FlightsProvider(props: PropsWithChildren<FlightsProviderProps>) {
     const {aircraft, children} = props,
         aircraftByTailNumber = _.keyBy(aircraft, "tailNumber"),
-        {status: {online, visible}} = useAppState(),
+        {status: {client: {online, visible}}} = useAppState(),
         {sync: {flights: config}} = useConfig(),
         openSky = useOpenSkyClient(),
         nominatim = useNominatimClient(),
