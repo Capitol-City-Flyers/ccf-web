@@ -12,9 +12,9 @@ export default function NavMenuButton({children}: PropsWithChildren) {
         menuClassList.toggle("hidden");
     }, [button, menu]);
     return (
-        <div className="inline-block">
+        <div className="p-1">
             <button ref={button}
-                    className="block hamburger pr-3 focus:outline-none md:hidden"
+                    className="hamburger focus:outline-none md:hidden"
                     onClick={onButtonClick}>&nbsp;
                 <span></span>
                 <span></span>

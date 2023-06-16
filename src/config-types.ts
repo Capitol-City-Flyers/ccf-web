@@ -14,6 +14,11 @@ export interface AircraftConfig extends AircraftIdent {
 export interface Config {
     auth: {
         defaultRoles: Array<Role>;
+        oidc: {
+            authority: URL;
+            clientId: string;
+            scopes: Array<string>;
+        }
     };
     defaults: DefaultsConfig;
     integration: IntegrationConfig;

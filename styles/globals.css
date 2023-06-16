@@ -9,13 +9,13 @@ body {
 /* Site (top) nav. */
 .ccf-site-nav {
     background: linear-gradient(to bottom, theme("colors.blue.100"), white 2rem);
-    @apply drop-shadow-md fixed flex flex-row h-12 items-center pl-2 pr-3 space-x-2 top-0 w-full z-20
+    @apply drop-shadow-md fixed flex min-h-12 items-center px-2 space-x-2 top-0 w-full z-20
 }
 
 /* Action nav, bottom or left depending upon screen width. */
 .ccf-action-nav {
     background: linear-gradient(to top, theme("colors.green.100"), white 2rem);
-    @apply border-gray-100 border-t-2 bottom-0 fixed flex flex-row h-12 items-center justify-evenly left-0 py-2 text-2xl w-full z-20 md:border-t-0 md:border-r-2 md:h-screen md:flex-col md:justify-start md:py-16 md:space-y-4 md:top-0 md:w-20 md:z-10
+    @apply border-gray-100 border-t-2 bottom-0 fixed flex h-12 items-center justify-evenly left-0 py-2 text-2xl w-full z-20 md:border-t-0 md:border-r-2 md:h-screen md:flex-col md:justify-start md:py-16 md:space-y-4 md:top-0 md:w-20 md:z-10
 }
 
 /* Stretch site nav down to keep status bar readable on iOS. */
@@ -46,12 +46,17 @@ div.hours-in-day {
     @apply grid
 }
 
-a:not(.button, .btn) {
-    color: theme("colors.blue.900");
-    transition: all 0.125s;
+a {
+    @apply transition-all;
 }
 
-a:hover:not(.button, .btn) {
+p > a {
+    color: theme("colors.blue.800");
+    transition: all 0.125s;
+    @apply drop-shadow-md;
+}
+
+p > a:hover {
     color: theme("colors.blue.400");
     transition: all 0.125s;
 }

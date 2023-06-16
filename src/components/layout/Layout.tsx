@@ -31,26 +31,26 @@ export default function Layout({children}: PropsWithChildren) {
                     <img className="object-cover" src={logoPng.src} alt="CCF Logo"/>
                 </div>
                 <div className="flex font-bold text-xl whitespace-nowrap">
-                    <Link href="/">Capitol City Flyers</Link>
+                    <Link className="hover:text-blue-500" href="/">Capitol City Flyers</Link>
                 </div>
                 <div className="hidden justify-center space-x-2 md:flex md:grow">{topNavLinks}</div>
                 <div className="flex grow justify-end space-x-2 md:grow-0">
                     <NavMenuButton>
                         {topNavLinks}
                         <div className="flex space-x-3">
-                            <BrandIconLink className="text-blue-300 transition-colors hover:text-blue-500"
+                            <BrandIconLink className="text-blue-300 hover:text-blue-500"
                                            href="https://www.facebook.com/CapitolCityFlyers"
                                            icon={faFacebook}/>
-                            <BrandIconLink className="text-red-300 transition-colors hover:text-red-500"
+                            <BrandIconLink className="text-red-300 hover:text-red-500"
                                            href="https://www.youtube.com/@CapitolCityFlyers"
                                            icon={faYoutube}/>
                         </div>
                     </NavMenuButton>
                     <div className="hidden space-x-2 md:flex">
-                        <BrandIconLink className="text-blue-300 transition-colors hover:text-blue-500"
+                        <BrandIconLink className="text-blue-300 hover:text-blue-500"
                                        href="https://www.facebook.com/CapitolCityFlyers"
                                        icon={faFacebook}/>
-                        <BrandIconLink className="text-red-300 transition-colors hover:text-red-500"
+                        <BrandIconLink className="text-red-300 hover:text-red-500"
                                        href="https://www.youtube.com/@CapitolCityFlyers"
                                        icon={faYoutube}/>
                     </div>

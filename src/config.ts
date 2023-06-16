@@ -8,7 +8,12 @@ export default function (env: Environment) {
     const build = "_build" === env;
     return {
         auth: {
-            defaultRoles: ["unidentified"]
+            defaultRoles: ["unidentified"],
+            oidc: {
+                authority: new URL("https://cognito-idp.us-east-2.amazonaws.com/us-east-2_7y7WMODkM"),
+                clientId: "p0l18vfbnllq3rs3nnj6d5sn3",
+                scopes: ["aws.cognito.signin.user.admin", "email", "openid", "profile"]
+            }
         },
         defaults: {
             prefs: {

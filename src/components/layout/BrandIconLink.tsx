@@ -10,7 +10,7 @@ interface BrandIconLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
 export default function BrandIconLink({className, href, icon}: BrandIconLinkProps) {
     return (
         <a href={href} target="__blank" className="flex items-center">
-            <FontAwesomeIcon className={`w-8 ${className}`} icon={icon}/>
+            <FontAwesomeIcon className={`h-8 transition-all ${className}`} icon={icon}/>
         </a>
     );
 }

@@ -1,7 +1,7 @@
 import {useCallback} from "react";
+import Link from "next/link";
 import {useAppDispatch} from "../../providers/app/AppContext";
 import {useMessages} from "../../providers/messages/MessagesContext";
-import Link from "next/link";
 
 export default function MemberMenu() {
     const dispatch = useAppDispatch(),
