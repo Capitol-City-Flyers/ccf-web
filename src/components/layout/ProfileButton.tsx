@@ -57,5 +57,9 @@ function MemberButton() {
             }
             return credentials.username.trim();
         }, [messages]);
-    return (<PanelButton label={displayName} panel={MemberMenu}/>);
+    return (
+        <PanelButton label={displayName}>
+            <MemberMenu/>
+        </PanelButton>
+    );
 }

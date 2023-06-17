@@ -46,12 +46,12 @@ div.hours-in-day {
     @apply grid
 }
 
-a:not(.button, .btn) {
+p > a {
     color: theme("colors.blue.900");
     transition: all 0.125s;
 }
 
-a:hover:not(.button, .btn) {
+p > a:hover {
     color: theme("colors.blue.400");
     transition: all 0.125s;
 }
