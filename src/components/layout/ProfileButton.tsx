@@ -26,7 +26,11 @@ function LoginButton() {
     const messages = useMessages({
         member: "cin.title.member"
     });
-    return (<PanelButton label={messages.member} panel={AircraftClubsLoginPanel}/>);
+    return (
+        <PanelButton label={messages.member}>
+            <AircraftClubsLoginPanel/>
+        </PanelButton>
+    );
 }
 
 /**

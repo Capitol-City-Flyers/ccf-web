@@ -1,4 +1,4 @@
-import {pointRadialDistance, pointToPointCourseDistance} from "../../src/utilities/nav-utils";
+import {pointRadialDistance, pointToPointCourseDistance, proximityBounds} from "../../src/utilities/geo-utils";
 import {GeoCoordinates} from "../../src/navigation/navigation-types";
 import {scale} from "../../src/utilities/math-utils";
 
@@ -15,5 +15,12 @@ describe("nav-utils.ts", () => {
         expect(scale(cd.course, 7)).toBe(298.5525002);
         expect(scale(cd.distance, 7)).toBe(94.8071826);
         expect(scale(cd.returnCourse, 7)).toBe(117.2311335);
+    });
+    test("proximityBounds()", () => {
+        const bounds = proximityBounds(msn, 10);
+        expect(scale(bounds[0].latitude, 7)).toBe(42.9731732);
+        expect(scale(bounds[0].longitude, 7)).toBe(-89.5651461);
+        expect(scale(bounds[1].latitude, 7)).toBe(43.3065801);
+        expect(scale(bounds[1].longitude, 7)).toBe(-89.1098629);
     });
 });

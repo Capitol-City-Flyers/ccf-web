@@ -1,5 +1,6 @@
 import {GeoCoordinates} from "../navigation/navigation-types";
 import {freeze} from "immer";
+import _ from "lodash";
 
 /**
  * Calculate the coordinates of the point on some `course` at some `distance` (in nautical miles) from some `from`
@@ -39,6 +40,28 @@ export function pointToPointCourseDistance(from: GeoCoordinates, to: GeoCoordina
         distance: cde.d,
         returnCourse: cde.crs21 * DEGREES_IN_RADIAN
     }
+}
+
+/**
+ * Calculate the bounding coordinates around all points within some distance of a center point.
+ *
+ * @param center the center point.
+ * @param distance the distance in nautical miles.
+ */
+export function proximityBounds(center: GeoCoordinates, distance): [min: GeoCoordinates, max: GeoCoordinates] {
+    const bounds = _.map([0, 90, 180, 270], course => pointRadialDistance(center, course, distance)),
+        latitude = _.map(bounds, "latitude"),
+        longitude = _.map(bounds, "longitude");
+    return [
+        {
+            latitude: _.min(latitude),
+            longitude: _.min(longitude),
+        },
+        {
+            latitude: _.max(latitude),
+            longitude: _.max(longitude)
+        }
+    ];
 }
 
 /*

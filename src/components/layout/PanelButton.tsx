@@ -1,54 +1,46 @@
-import {AnchorHTMLAttributes, PropsWithChildren, useCallback, useEffect, useState} from "react";
+import {AnchorHTMLAttributes, PropsWithChildren, useCallback, useEffect, useRef, useState} from "react";
 import _ from "lodash";
 import {useRouter} from "next/router";
 import {isAnchorElement} from "../../utilities/dom-utils";
+import {freeze} from "immer";
 
 interface PanelButtonProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
     label: string;
 }
 
 export function PanelButton({children, label}: PropsWithChildren<PanelButtonProps>) {
-    const [state, setState] = useState<PanelState>("closed"),
+    const [open, setOpen] = useState(false),
+        buttonRef = useRef<HTMLAnchorElement>(),
+        panelRef = useRef<HTMLDivElement>(),
         router = useRouter();
 
-    const onButtonClick = useCallback(() => {
-        setState(state => {
-            switch (state) {
-                case "open": return "closed";
-                case "dismissed": return "closed";
-                case "closed": return "open";
-            }
-
-        });
-    }, [setState]);
-
-    const onDocumentMouseDown = useCallback(({target}: MouseEvent) => {
-        if (isAnchorElement(target)) {
-            const {href} = target;
-            if (_.isString(href)) {
-                router.push(href).then();
-            }
+    /* Close the panel on click anywhere outside the panel; toggle on click in the show/hide button. */
+    const onDocumentClick = useCallback(({target}: MouseEvent) => {
+        if (target === buttonRef.current) {
+            setOpen(open => !open);
+        } else if (false === panelRef.current?.contains(target as Element)) {
+            setOpen(false);
         }
-        setState("dismissed");
-    }, [setState]);
+    }, [setOpen]);
 
-    /* When the panel is open, attach a click handler to the document which will close it. */
-    const open = "open" === state;
+    /* Close the panel when the user navigates away. */
+    const {pathname} = router;
     useEffect(() => {
-        if (open) {
-            document.addEventListener("mousedown", onDocumentMouseDown);
-            return () => document.removeEventListener("mousedown", onDocumentMouseDown);
+        setOpen(false);
+    }, [pathname]);
+
+    /* Attach document event handler(s) to close the panel when necessary. */
+    useEffect(() => {
+        document.addEventListener("click", onDocumentClick);
+        return () => {
+            document.removeEventListener("click", onDocumentClick);
         }
-    }, [open]);
+    }, []);
     return (
         <div className="relative self-center">
-            <a className={`${open ? "rounded-b-none" : ""} bg-blue-500 hover:bg-blue-600 ${buttonClasses}`}
-               onClick={onButtonClick}>
-                {label}
-            </a>
+            <a ref={buttonRef} className={open ? openButtonClasses : baseButtonClasses}>{label}</a>
             {open && (
-                <div
-                    className="bg-blue-50 border border-r border-t-2 border-t-blue-500 border-blue-200 rounded-box rounded-tr-none drop-shadow-xl absolute right-0 mt-1 z-30">
+                <div ref={panelRef} className={panelClasses}>
                     {children}
                 </div>
             )}
@@ -56,17 +48,33 @@ export function PanelButton({children, label}: PropsWithChildren<PanelButtonProp
     );
 }
 
-type PanelState =
-    | "closed"
-    | "open"
-    | "dismissed";
-
-const buttonClasses = [
+const baseButtonClasses = [
+    "bg-blue-500",
     "cursor-pointer",
+    "drop-shadow-md",
     "py-2",
     "px-3",
     "rounded-box",
+    "select-none",
     "text-white",
-    "drop-shadow-md",
     "transition-color",
+    "hover:bg-blue-600",
+].join(" ");
+
+const openButtonClasses = `${baseButtonClasses} rounded-b-none`;
+
+const panelClasses = [
+    "absolute",
+    "bg-blue-50",
+    "border",
+    "border-blue-200",
+    "border-r",
+    "border-t-2",
+    "border-t-blue-500",
+    "drop-shadow-xl",
+    "mt-1",
+    "right-0",
+    "rounded-box",
+    "rounded-tr-none",
+    "z-30"
 ].join(" ");

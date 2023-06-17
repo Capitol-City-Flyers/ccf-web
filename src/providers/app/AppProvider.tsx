@@ -12,6 +12,7 @@ import {AppStateImpl} from "./AppStateImpl";
 import AppStatePersister from "./AppStatePersister";
 import type {ProviderComponentProps} from "./app-types";
 import type {AppContext} from "./AppContext";
+import AuthRedirector from "../../components/auth/AuthRedirector";
 
 /**
  * {@link AppProvider} initializes basic application state and  standard service provider components. It also monitors
@@ -46,7 +47,6 @@ export default function AppProvider(props: PropsWithChildren<ProviderComponentPr
     }, []);
 
     /* Update state on changes to browser online/offline status. */
-    const build = "_build" === env;
     useEffect(() => {
         const onOnlineChange = ({type}) => {
                 dispatch({
@@ -76,6 +76,7 @@ export default function AppProvider(props: PropsWithChildren<ProviderComponentPr
                 <AppStatePersister/>
                 <AppInstaller/>
                 <GeolocationProvider/>
+                <AuthRedirector/>
                 <AxiosProvider>
                     <DatabaseProvider>
                         <MessagesProvider>
