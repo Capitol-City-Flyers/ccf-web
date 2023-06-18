@@ -1,5 +1,5 @@
 import Require from "../../components/auth/Require";
-import Link from "next/link";
+import PageLink from "../../components/layout/PageLink";
 
 export default function() {
     return (
@@ -7,7 +7,7 @@ export default function() {
             <h1 className="text-3xl font-bold underline">Profile</h1>
             <div>
                 <h2>Links</h2>
-                <Link href="/">Home</Link>
+                <PageLink href="/">Home</PageLink>
             </div>
         </Require>
     );

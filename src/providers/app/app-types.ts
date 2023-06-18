@@ -214,6 +214,12 @@ export interface ClientStatus {
     ready: boolean;
 
     /**
+     * Is the application operating in standalone mode on a mobile device (for example, installed on the iOS home
+     * screen?)
+     */
+    standalone: boolean;
+
+    /**
      * Is the document visible--not obscured by some other window or tab?
      */
     visible: boolean;

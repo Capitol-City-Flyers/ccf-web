@@ -1,38 +1,39 @@
-import React, {PropsWithChildren, useMemo} from "react";
-import Link from "next/link";
+import React, {PropsWithChildren, useEffect, useMemo, useRef} from "react";
 import {faFacebook, faYoutube} from "@fortawesome/free-brands-svg-icons";
 import {faCalendarDays, faCamera, faCloud, faGear, faPlaneDeparture, faUser} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useApp} from "../../providers/app/AppContext";
 import logoPng from "../../../public/images/favicon.png";
 import BrandIconLink from "./BrandIconLink";
 import NavMenuButton from "./NavMenuButton";
+import PageLink from "./PageLink";
 import {ProfileButton} from "./ProfileButton";
-import {useApp} from "../../providers/app/AppContext";
-import type {Environment} from "../../config-types";
 
 export default function Layout({children}: PropsWithChildren) {
     const isAuthenticated = false,
-        {env} = useApp(),
-        appClasses = useMemo(() => [
-            "ccf-app",
-            ...(checkStandalone(env) ? ["ccf-standalone"] : [])
-        ].join(" "), []),
+        {env, state: {status: {client: {standalone}}}} = useApp(),
+        appRef = useRef<HTMLDivElement>(),
         topNavLinks = useMemo(() => (
             <>
                 <a href="#">Aircraft</a>
-                <Link href="/membership">Membership</Link>
+                <PageLink href="/membership">Membership</PageLink>
                 <a href="#">Contact</a>
-                <Link href="/credits">Credits</Link>
+                <PageLink href="/credits">Credits</PageLink>
             </>
         ), []);
+    useEffect(() => {
+        if (standalone) {
+            appRef.current.classList.add("ccf-standalone");
+        }
+    }, []);
     return (
-        <div className={appClasses}>
+        <div ref={appRef} className="ccf-app">
             <nav className="ccf-site-nav">
                 <div className="w-16">
                     <img className="object-cover" src={logoPng.src} alt="CCF Logo"/>
                 </div>
                 <div className="flex font-bold text-xl whitespace-nowrap">
-                    <Link href="/">Capitol City Flyers</Link>
+                    <PageLink href="/">Capitol City Flyers</PageLink>
                 </div>
                 <div className="hidden justify-center space-x-2 md:flex md:grow">{topNavLinks}</div>
                 <div className="flex grow justify-end space-x-2 md:grow-0">
@@ -65,7 +66,7 @@ export default function Layout({children}: PropsWithChildren) {
             </div>
             {isAuthenticated && (
                 <nav className="ccf-action-nav">
-                    <Link href="/members"><FontAwesomeIcon icon={faUser}/></Link>
+                    <PageLink href="/members"><FontAwesomeIcon icon={faUser}/></PageLink>
                     <a href="#"><FontAwesomeIcon icon={faCalendarDays}/></a>
                     <a href="#"><FontAwesomeIcon icon={faCloud}/></a>
                     <a href="#"><FontAwesomeIcon icon={faPlaneDeparture}/></a>
@@ -75,21 +76,4 @@ export default function Layout({children}: PropsWithChildren) {
             )}
         </div>
     );
-}
-
-function checkStandalone(env: Environment) {
-    if ("_build" === env) {
-        return false;
-    }
-    const {navigator} = window;
-    if (window.matchMedia("(display-mode: standalone)").matches) {
-        console.debug("Determined standalone state [true] via media query.");
-        return true;
-    } else if ("standalone" in navigator) {
-        const standalone = !!navigator.standalone;
-        console.debug(`Determined standalone state [${standalone}] via Navigator.`);
-        return standalone;
-    }
-    console.debug("Returning standalone state [false] by default.");
-    return false;
 }

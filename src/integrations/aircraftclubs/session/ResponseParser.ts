@@ -2,7 +2,6 @@ import {freeze} from "immer";
 import _ from "lodash";
 import {DateTime, IANAZone} from "luxon";
 import type {Zone} from "luxon";
-import type {AircraftConfig} from "../../../config-types";
 import type {Reservation} from "../../../providers/database/database-types";
 import type {GetBookingsForCalendarResponse, GetMembersResponse, LoginSuccess} from "../aircraftclubs-types";
 import {AircraftIdent} from "../../../aircraft/aircraft-types";

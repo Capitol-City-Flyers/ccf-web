@@ -84,6 +84,7 @@ export class AppStateImpl implements AppState {
                     initializing: ["state"],
                     online: !build && window.navigator.onLine,
                     ready: false,
+                    standalone: checkStandalone(env),
                     visible: !build && "visible" === window.document.visibilityState,
                     worker: "undetermined",
                 },
@@ -234,6 +235,23 @@ export class AppStateImpl implements AppState {
         }
         throw Error("Unsupported action.");
     }
+}
+
+function checkStandalone(env: Environment) {
+    if ("_build" === env) {
+        return false;
+    }
+    const {navigator} = window;
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+        console.debug("Determined standalone state [true] via media query.");
+        return true;
+    } else if ("standalone" in navigator) {
+        const standalone = !!navigator.standalone;
+        console.debug(`Determined standalone state [${standalone}] via Navigator.`);
+        return standalone;
+    }
+    console.debug("Returning standalone state [false] by default.");
+    return false;
 }
 
 /**
