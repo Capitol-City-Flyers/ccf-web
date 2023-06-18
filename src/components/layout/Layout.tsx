@@ -22,6 +22,7 @@ export default function Layout({children}: PropsWithChildren) {
                 <a href="#">Aircraft</a>
                 <Link href="/membership">Membership</Link>
                 <a href="#">Contact</a>
+                <Link href="/credits">Credits</Link>
             </>
         ), []);
     return (

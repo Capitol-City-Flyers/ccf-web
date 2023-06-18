@@ -149,6 +149,9 @@ export default function PeriodicDatasetSync(props: PeriodicDatasetSyncProps) {
                                 kind: "datasetCycleSegmentImported",
                                 payload: {cycle, dataset, segment}
                             });
+                        })
+                        .catch(ex => {
+                            console.error(`Error importing [${dataset}] cycle [${cycle}] segment [${segment}].`, ex);
                         });
                 }
             }

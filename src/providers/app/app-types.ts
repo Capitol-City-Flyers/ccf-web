@@ -231,6 +231,7 @@ export interface ClientStatus {
  * Device preferences.
  */
 interface DevicePrefs {
+    enableExperimentalFeatures: boolean;
     enableGeolocation: boolean;
     install: boolean;
 }

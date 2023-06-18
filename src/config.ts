@@ -13,6 +13,7 @@ export default function (env: Environment) {
         defaults: {
             prefs: {
                 device: {
+                    enableExperimentalFeatures: false,
                     enableGeolocation: false,
                     install: false
                 },
