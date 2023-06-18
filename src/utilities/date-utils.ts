@@ -101,18 +101,29 @@ function collapsedRanges(ranges: Array<DateRange>): Array<DateRange> {
  * @param offset the cycle offset from the *current* cycle at the reference date/time.
  */
 export function cycleInterval(base: DateTime, length: number, reference: DateTime, offset: number = 0) {
-    const diff = julianDay(reference.setZone(base.zone)) - julianDay(base),
+    const diff = julianDayNumber(reference.setZone(base.zone)) - julianDayNumber(base),
         start = base.plus({day: Math.floor((diff / length) + offset) * length});
     return start.until(start.plus({day: length}));
 }
 
 /**
- * Get the Julian day number at a given date/time.
+ * Get the Julian day number at a given date/time. Note that the
+ * [Julian day begins at noon](https://en.wikipedia.org/wiki/Julian_day).
  *
  * @param date the date/time.
  */
-export function julianDay(date: DateTime) {
-    return Math.floor(date.setZone("UTC").startOf("day").toMillis() / 86_400_000 + 2440587.5);
+export function julianDayNumber(date: DateTime) {
+    return Math.floor(date.toMillis() / 86_400_000 + 2_440_587.5);
+}
+
+/**
+ * Get the start date/time of a Julian day number in the UTC zone. Note that the
+ * [Julian day begins at noon](https://en.wikipedia.org/wiki/Julian_day); the returned time portion will be noon.
+ *
+ * @param jdn the Julian day number.
+ */
+export function startOfJulianDay(jdn: number) {
+    return DateTime.fromMillis((jdn - 2_440_587.5) * 86_400_000, {zone: "UTC"});
 }
 
 /**

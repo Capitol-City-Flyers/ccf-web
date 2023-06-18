@@ -3,12 +3,12 @@ import {
     LocalDateFormat,
     DateRange,
     excludedRanges,
-    julianDay,
+    julianDayNumber,
     periodInterval,
     nowUTC,
     toFractions,
     toLengthFractions,
-    toTransitions,
+    toTransitions, startOfJulianDay,
 } from "../../src/utilities/date-utils";
 
 describe("DateUtils", () => {
@@ -56,12 +56,15 @@ describe("DateUtils", () => {
             });
         });
     });
-    describe("julianDay()", () => {
+    describe("julianDayNumber()", () => {
         test("At end of day", () => {
-            expect(julianDay(DateTime.fromISO("2023-04-19T23:59:59.999Z"))).toBe(2_460_053);
+            expect(julianDayNumber(DateTime.fromISO("2023-04-19T11:59:59.999Z"))).toBe(2_460_053);
         });
         test("At start of day", () => {
-            expect(julianDay(DateTime.fromISO("2023-04-20T00:00:00Z"))).toBe(2_460_054);
+            expect(julianDayNumber(DateTime.fromISO("2023-04-20T12:00:00Z"))).toBe(2_460_055);
+        });
+        test("Known reference date", () => {
+            expect(julianDayNumber(DateTime.fromISO("2000-01-01T12:00:00.000Z"))).toBe(2_451_545);
         });
     });
     test("nowUTC()", () => {
@@ -72,6 +75,12 @@ describe("DateUtils", () => {
         expect(now.diff(beforeOrSame).toMillis()).toBeGreaterThanOrEqual(0);
         expect(now.diff(afterOrSame).toMillis()).toBeLessThanOrEqual(0);
     });
+    describe("startOfJulianDay()", () => {
+        test("Known reference Julian day number", () => {
+            expect(startOfJulianDay(2_451_545))
+                .toStrictEqual(DateTime.fromISO("2000-01-01T12:00:00.000Z", {setZone: true}));
+        });
+    })
     describe("toTransitions()", () => {
         test("For an empty interval array", () => {
             expect(toTransitions([])).toStrictEqual([]);
