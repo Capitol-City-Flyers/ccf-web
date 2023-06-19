@@ -1,11 +1,19 @@
 {
+  "name": "@capitol-city-flyers/ccf-web",
+  "description": "CCF web site",
   "private": true,
+  "repository": "https://github.com/capitol-city-flyers/ccf-web.git",
+  "files": [
+    "./out/**/*"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "prepare": "npm run build",
     "start": "next start",
     "test": "jest",
-    "postversion": "node ./postversion.js"
+    "postversion": "node ./postversion.js",
+    "prepublishOnly": "npm test"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
