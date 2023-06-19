@@ -7,6 +7,9 @@ on:
 permissions:
   contents: read
 
+env:
+  CCF_TEST_DATA_PASSPHRASE: ${{ secrets.CCF_TEST_DATA_PASSPHRASE }}
+
 jobs:
   release:
     name: Release
