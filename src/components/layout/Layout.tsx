@@ -1,4 +1,4 @@
-import React, {PropsWithChildren, useMemo} from "react";
+import React, {PropsWithChildren, useEffect, useMemo, useRef} from "react";
 import Link from "next/link";
 import {faFacebook, faYoutube} from "@fortawesome/free-brands-svg-icons";
 import {faCalendarDays, faCamera, faCloud, faGear, faPlaneDeparture, faUser} from "@fortawesome/free-solid-svg-icons";
@@ -10,13 +10,10 @@ import {ProfileButton} from "./ProfileButton";
 import {useApp} from "../../providers/app/AppContext";
 import type {Environment} from "../../config-types";
 
-export default function Layout({children}: PropsWithChildren) {
+export default function Layout(props: PropsWithChildren) {
+    const {children} = props;
     const isAuthenticated = false,
         {env} = useApp(),
-        appClasses = useMemo(() => [
-            "ccf-app",
-            ...(checkStandalone(env) ? ["ccf-standalone"] : [])
-        ].join(" "), []),
         topNavLinks = useMemo(() => (
             <>
                 <a href="#">Aircraft</a>
@@ -24,9 +21,15 @@ export default function Layout({children}: PropsWithChildren) {
                 <a href="#">Contact</a>
                 <Link href="/credits">Credits</Link>
             </>
-        ), []);
+        ), []),
+        appRef = useRef<HTMLDivElement>();
+    useEffect(() => {
+        if (checkStandalone(env)) {
+            appRef.current.classList.add("ccf-standalone");
+        }
+    }, []);
     return (
-        <div className={appClasses}>
+        <div ref={appRef} className="ccf-app">
             <nav className="ccf-site-nav">
                 <div className="w-16">
                     <img className="object-cover" src={logoPng.src} alt="CCF Logo"/>

@@ -1,0 +1,15 @@
+{
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/images/apple-touch-icon-180x180.png",
+      "type": "image/png",
+      "sizes": "180x180"
+    }
+  ],
+  "id": "cap-city-flyers-1",
+  "name": "Capitol City Flyers",
+  "short_name": "CapCityFlyers",
+  "start_url": "/",
+  "scope": "/"
+}
