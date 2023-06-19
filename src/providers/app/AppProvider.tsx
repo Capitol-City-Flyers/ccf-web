@@ -32,7 +32,8 @@ export default function AppProvider(props: PropsWithChildren<ProviderComponentPr
         const element = window.document.querySelector<HTMLScriptElement>("script#__NEXT_DATA__");
         if (null != element) {
             try {
-                const {buildId, runtimeConfig: {buildTimestamp, version}} = JSON.parse(element.innerHTML);
+                const {buildId, runtimeConfig: {buildTimestamp, version: versionTag}} = JSON.parse(element.innerHTML);
+                const version = /@@:VERSION=(.*):@@/.exec(versionTag)[1];
                 dispatch({
                     kind: "buildInfoRetrieved",
                     payload: Object.assign({
