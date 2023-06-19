@@ -1,10 +1,19 @@
 {
+  "name": "@capitol-city-flyers/ccf-web",
+  "description": "CCF web site",
   "private": true,
+  "repository": "https://github.com/capitol-city-flyers/ccf-web.git",
+  "files": [
+    "./out/**/*"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "prepare": "npm run build",
     "start": "next start",
-    "test": "jest"
+    "test": "jest",
+    "postversion": "node ./postversion.js",
+    "prepublishOnly": "npm test"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
@@ -23,6 +32,8 @@
     "qs": "^6.11.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "replace-in-file": "^7.0.1",
+    "save-dev": "^0.0.1-security",
     "suncalc": "^1.9.0"
   },
   "devDependencies": {
@@ -45,6 +56,7 @@
     "jsdom": "^22.1.0",
     "next-pwa": "^5.6.0",
     "postcss": "^8.4.23",
+    "semantic-release": "^21.0.5",
     "tailwindcss": "^3.3.2",
     "typescript": "4.9.5"
   }

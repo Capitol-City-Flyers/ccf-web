@@ -12,8 +12,7 @@ module.exports = phase => {
     let config = {
         publicRuntimeConfig: Object.assign({
             buildTimestamp: DateTime.now().setZone("UTC").toISO(),
-        }, process.env.CIN_VERSION && {
-            version: process.env.CIN_VERSION
+            version: `@@:VERSION=${process.env["npm_package_version"] || ""}:@@`
         })
     };
     if ("phase-development-server" !== phase) {
