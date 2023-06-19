@@ -1,7 +1,8 @@
 import Head from "next/head";
-import faviconPng from "../../../public/images/favicon.png";
-import appleTouchIcon180x180 from "../../../public/images/apple-touch-icon-180x180.png";
 import {useMessages} from "../../providers/messages/MessagesContext";
+
+import appleTouchIcon180x180 from "../../../public/images/apple-touch-icon-180x180.png";
+import faviconPng from "../../../public/images/favicon.png";
 
 /**
  * [AppHead] renders application link and metadata tags.
@@ -10,14 +11,15 @@ import {useMessages} from "../../providers/messages/MessagesContext";
  */
 export default function AppHead() {
     const messages = useMessages({
-            iosHomeScreenTitle: "ccf.ios.home-screen.title",
-            orgDescription: "ccf.org.description",
-            siteTitle: "ccf.site.title"
-        });
+        iosHomeScreenTitle: "ccf.ios.home-screen.title",
+        orgDescription: "ccf.org.description",
+        siteTitle: "ccf.site.title"
+    });
     return (
         <Head>
             <title>{messages.siteTitle}</title>
             <link rel="icon" href={faviconPng.src}/>
+            <link rel="manifest" href="/manifest.json"/>
             <link rel="apple-touch-icon" href={appleTouchIcon180x180.src}/>
             <meta name="viewport"
                   content="height=device-height,width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,viewport-fit=cover"/>
