@@ -1,5 +1,6 @@
 {
   "description": "CCF web site",
+  "name": "ccf-web",
   "repository": "https://github.com/capitol-city-flyers/ccf-web.git",
   "files": [
     "./out/**/*"
