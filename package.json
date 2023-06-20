@@ -15,6 +15,7 @@
     "prepublishOnly": "npm test"
   },
   "dependencies": {
+    "@capitol-city-flyers/ccf-web-integration": "^1.0.38",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",

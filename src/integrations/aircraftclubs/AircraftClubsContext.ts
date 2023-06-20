@@ -1,5 +1,5 @@
 import {createContext, useContext} from "react";
-import {AircraftClubsClient} from "./AircraftClubsClient";
+import {AircraftClubsClient} from "@capitol-city-flyers/ccf-web-integration";
 
 /**
  * Object stored in the AircraftClubs context.
