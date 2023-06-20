@@ -1,11 +1,17 @@
 name: Test pull request
 on: [pull_request]
+
 env:
+  CCF_GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   CCF_TEST_DATA_PASSPHRASE: ${{ secrets.CCF_TEST_DATA_PASSPHRASE }}
+
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Test
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     permissions:
       checks: write
       pull-requests: write
