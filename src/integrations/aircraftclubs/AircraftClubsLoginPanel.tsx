@@ -4,11 +4,10 @@ import _ from "lodash";
 import BasicLoginForm, {BasicLoginFormContents} from "../../components/auth/BasicLoginForm";
 import {useApp} from "../../providers/app/AppContext";
 import {useMessages} from "../../providers/messages/MessagesContext";
-import {isLoginIncorrect} from "./aircraftclubs-types";
 import {useAircraftClubsClient} from "./AircraftClubsContext";
 import type {IntegrationConfig} from "../../config-types";
 import type {Role} from "../../providers/app/app-types";
-import type {LoginSuccess} from "./aircraftclubs-types";
+import {isLoginIncorrect} from "@capitol-city-flyers/ccf-web-integration";
 
 /**
  * [AircraftClubsLogin] presents a simple username/password form which delegates to [AircraftClubsClient] for
@@ -36,17 +35,13 @@ export default function AircraftClubsLoginPanel() {
 
     /* Form event handlers. */
     const onLoginSubmit = useCallback((form: BasicLoginFormContents) => {
-        client.authenticate(form)
-            .then(response => {
-                if (isLoginIncorrect(response)) {
-                    console.error(messages.loginIncorrect);
-                    setErrorMessage(messages.loginIncorrect);
-                } else {
+        client.login(form)
+            .then(({authentication}) => {
                     dispatch({
                         kind: "authChanged",
                         payload: {
                             credentials: _.pick(form, "password", "username"),
-                            roles: mapRoles(response, config.integration.aircraftClubs.roleMappings)
+                            roles: mapRoles(authentication.permissions, config.integration.aircraftClubs.roleMappings)
                         }
                     });
                     dispatch({
@@ -59,27 +54,30 @@ export default function AircraftClubsLoginPanel() {
                         dispatch({
                             kind: "identityPrefsChanged",
                             payload: {
-                                email: response.email,
-                                familyName: response.lastName,
-                                givenName: response.firstName,
+                                email: authentication.email,
+                                familyName: authentication.familyName,
+                                givenName: authentication.givenName,
                             }
                         });
                     }
-                }
             })
             .catch(ex => {
-                console.error(messages.loginFailed, ex);
-                setErrorMessage(messages.loginFailed);
+                if (isLoginIncorrect(ex)) {
+                    console.error(messages.loginIncorrect);
+                    setErrorMessage(messages.loginIncorrect);
+                } else {
+                    console.error(messages.loginFailed, ex);
+                    setErrorMessage(messages.loginFailed);
+                }
             });
     }, [dispatch, prefs, setErrorMessage]);
     return (<BasicLoginForm error={errorMessage} form={initialForm} onSubmit={onLoginSubmit}/>);
 }
 
-function mapRoles(response: LoginSuccess, mappings: IntegrationConfig["aircraftClubs"]["roleMappings"]) {
-    const permissions = response.permissions.split(",")
-            .map(permission => parseInt(permission, 10))
+function mapRoles(permissions: string[], mappings: IntegrationConfig["aircraftClubs"]["roleMappings"]) {
+    const perms = permissions.map(permission => parseInt(permission, 10))
             .filter(permission => !_.isNaN(permission)),
-        roles = _.transform(permissions, (acc, permission) => {
+        roles = _.transform(perms, (acc, permission) => {
             const roles = mappings[permission];
             if (roles) {
                 acc.push(...(_.isArray(roles) ? roles : [roles]));
