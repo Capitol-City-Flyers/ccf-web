@@ -2,6 +2,7 @@ import {useAppStatus, usePrefs} from "../../../providers/app/AppContext";
 import WeatherStationSelector from "../../../components/weather/WeatherStationSelector";
 import {useNominatimClient} from "../../../integrations/nominatim/NominatimContext";
 import {useEffect, useState} from "react";
+import DailyAvailability from "../../../components/schedule/DailyAvailability";
 
 
 function PositionLabel() {
@@ -49,6 +50,10 @@ export default function MemberExperimentsPage() {
                         <WeatherStationSelector/>
                     )}
                 </div>
+            </div>
+            <div className="py-2">
+                <strong>Daily availability</strong>
+                <DailyAvailability/>
             </div>
         </section>
     );

@@ -1,9 +1,11 @@
-import {type AxiosInstance} from "axios";
+import {type AxiosInstance, isAxiosError} from "axios";
 import {freeze, immerable} from "immer";
 import _ from "lodash";
 import {OpenSkyResponseParser, type StatesAllResponse} from "./OpenSkyResponseParser";
 import type {AircraftIdent} from "../../aircraft/aircraft-types";
 import type {AircraftPosition} from "./opensky-types";
+import {validateIn} from "../../utilities/array-utils";
+import {DateTime} from "luxon";
 
 /**
  * {@link OpenSkyClient} encapsulates the process of retrieving flight position information from the
@@ -29,11 +31,20 @@ export class OpenSkyClient {
         if (0 === aircraft.length) {
             return Promise.resolve([]);
         }
-        return this.axios.get<StatesAllResponse>("./states/all", {
+        const response = await this.axios<StatesAllResponse>({
+            method: "get",
+            url: "./states/all",
             params: {
                 icao24: _.map(aircraft, ({modeSCodeHex}) => _.toLower(modeSCodeHex))
-            }
-        }).then(({data}) => this.parser.parseStatesAllResponse(data, aircraft));
+            },
+            timeout: 5_000,
+            validateStatus: validateIn(200)
+        });
+        if (!isAxiosError(response)) {
+            return this.parser.parseStatesAllResponse(response.data, aircraft);
+        }
+        console.warn("Error querying aircraft positions.", response);
+        return [];
     }
 
     static create(axios: AxiosInstance) {

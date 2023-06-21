@@ -4,7 +4,7 @@ import OpenSkyProvider from "./integrations/opensky/OpenSkyProvider";
 import NominatimProvider from "./integrations/nominatim/NominatimProvider";
 import NFDCProvider from "./integrations/faa/nfdc/NFDCProvider";
 
-export default function (env: Environment) {
+export default function (env: Environment): Config {
     const build = "_build" === env;
     return {
         auth: {
@@ -60,7 +60,7 @@ export default function (env: Environment) {
                 baseURL: new URL("https://nominatim.openstreetmap.org/")
             },
             openSky: {
-                baseURL: new URL("https://opensky-network.org/api/")
+                baseURL: new URL("https://opensky-network.org/")
             }
         },
         operator: {
@@ -94,5 +94,5 @@ export default function (env: Environment) {
                 notInFlightInterval: {minute: 15}
             }
         }
-    } satisfies Config;
+    };
 };
