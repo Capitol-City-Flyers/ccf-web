@@ -60,7 +60,7 @@ export default function (env: Environment): Config {
                 baseURL: new URL("https://nominatim.openstreetmap.org/")
             },
             openSky: {
-                baseURL: new URL("https://opensky-network.org/")
+                baseURL: new URL("https://opensky-network.org/api/")
             }
         },
         operator: {

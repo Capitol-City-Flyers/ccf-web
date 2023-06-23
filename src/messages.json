@@ -20,6 +20,13 @@
     "cin.title.preferences": "Preferences",
     "cin.title.profile": "Profile",
     "cin.title.retry": "Retry",
+    "cin.tooltip.solar-intervals.am-night": "Night (ends {1})",
+    "cin.tooltip.solar-intervals.daylight": "Daylight ({2}, {3})",
+    "cin.tooltip.solar-intervals.evening-civil-twilight": "Evening civil twilight (ends {1})",
+    "cin.tooltip.solar-intervals.hour-after-sunset": "One hour after sunset (ends {1})",
+    "cin.tooltip.solar-intervals.hour-before-sunrise": "One hour before sunrise (begins {0})",
+    "cin.tooltip.solar-intervals.morning-civil-twilight": "Morning civil twilight (begins {0})",
+    "cin.tooltip.solar-intervals.pm-night": "Night (begins {0})",
     "ccf.org.description": "Member owned flying club in Madison, Wisconsin",
     "ccf.site.title": "Capitol City Flyers",
     "ccf.ios.home-screen.title": "CapCityFlyers"

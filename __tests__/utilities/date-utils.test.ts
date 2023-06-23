@@ -1,4 +1,4 @@
-import {DateTime, Interval} from "luxon";
+import {DateTime, Duration, Interval} from "luxon";
 import {
     LocalDateFormat,
     DateRange,
@@ -9,6 +9,7 @@ import {
     toFractions,
     toLengthFractions,
     toTransitions,
+    truncate
 } from "../../src/utilities/date-utils";
 
 describe("DateUtils", () => {
@@ -121,6 +122,21 @@ describe("DateUtils", () => {
                 "2023-04-23T00:00:00.000Z"
             ]);
         });
+    });
+    test("truncate()", () => {
+        const duration = Duration.fromDurationLike({
+            years: 1,
+            months: 2,
+            days: 3,
+            hours: 4,
+            minutes: 5,
+            seconds: 6,
+            milliseconds: 60_000
+        });
+        expect(truncate(duration, "minutes"))
+            .toStrictEqual(Duration.fromDurationLike({
+                years: 1, months: 2, days: 3, hours: 4, minutes: 6
+            }));
     });
 
     describe("excludedRanges()", () => {

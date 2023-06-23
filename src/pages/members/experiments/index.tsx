@@ -3,6 +3,8 @@ import WeatherStationSelector from "../../../components/weather/WeatherStationSe
 import {useNominatimClient} from "../../../integrations/nominatim/NominatimContext";
 import {useEffect, useState} from "react";
 import DailyAvailability from "../../../components/schedule/DailyAvailability";
+import DaySegmentsPanel from "../../../components/chrono/DaySegmentsPanel";
+import {DateTime} from "luxon";
 
 
 function PositionLabel() {
@@ -55,6 +57,9 @@ export default function MemberExperimentsPage() {
                 <strong>Daily availability</strong>
                 <DailyAvailability/>
             </div>
+            <DaySegmentsPanel date={DateTime.now()} position={{latitude: 43.2869331, longitude: -89.7240116}}>
+                This is only a test
+            </DaySegmentsPanel>
         </section>
     );
 }

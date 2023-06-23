@@ -142,10 +142,6 @@ p > a:hover {
 
 /* Availability grid. */
 .av-grid {
-    --solar-interval-civil-twilight-color: theme("colors.slate.100");
-    --solar-interval-day-color: theme("colors.slate.50");
-    --solar-interval-hour-from-daylight-color: theme("colors.slate.200");
-    --solar-interval-night-color: theme("colors.slate.300");
     border-radius: 0.5rem;
 }
 

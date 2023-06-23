@@ -1,6 +1,6 @@
 import {freeze} from "immer";
 import _ from "lodash";
-import {DateTime, Duration, DurationLike, DurationObjectUnits, DurationUnit, Interval} from "luxon";
+import {DateTime, Duration, DurationLike, DurationLikeObject, DurationObjectUnits, DurationUnit, Interval} from "luxon";
 
 export interface Periodicity {
     base: DateTime;
@@ -214,6 +214,18 @@ export function toValidInterval(interval: Interval | ValidInterval): ValidInterv
         throw Error("Interval is not valid.");
     }
     return interval as ValidInterval;
+}
+
+/**
+ * Truncate a duration to a given unit, setting all units *smaller* than that unit to zero and removing them.
+ *
+ * @param duration the duration.
+ * @param unit the unit to which to truncate.
+ */
+export function truncate(duration: Duration, unit: keyof DurationObjectUnits) {
+    const index = ORDERED_UNITS.indexOf(unit),
+        units = duration.rescale().toObject();
+    return Duration.fromDurationLike(_.omit(units, ORDERED_UNITS.slice(index + 1)));
 }
 
 /**
