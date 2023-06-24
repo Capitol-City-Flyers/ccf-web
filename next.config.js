@@ -13,7 +13,10 @@ module.exports = phase => {
         publicRuntimeConfig: Object.assign({
             buildTimestamp: DateTime.now().setZone("UTC").toISO(),
             version: `@@:VERSION=${process.env["npm_package_version"] || ""}:@@`
-        })
+        }),
+        transpilePackages: [
+            "metar-taf-parser"
+        ]
     };
     if ("phase-development-server" !== phase) {
         Object.assign(config, {
