@@ -4,22 +4,30 @@ import {Distance, ICloud, IMetar, ITAF} from "metar-taf-parser";
 import {resolveDayTime} from "./date-utils";
 
 /**
- * Determine the US/FAA flight category which corresponds to a given array of cloud layers and visibility.
+ * Given a TAF and an array of Metars, build an array of flight category intervals. Equivalent to
+ * {@link metarFlightCategories} combined with {@link tafFlightCategories} such that Metar-derived categories override
+ * TAF-derived from overlapping intervals of time. Metar data is used until the end of the Metar data, then the TAF data
+ * is used for the remainder of the period.
  *
- * @param clouds the cloud layers.
- * @param visibility the visibility.
+ * @param reference the reference date/time for interpreting day/time values.
+ * @param taf the TAF.
+ * @param metars the Metar(s).
  */
-export function flightCategory(clouds: ICloud[], visibility: Distance) {
-    const visibilitySM = visibility.value * ("SM" === visibility.unit ? 1 : 1609.34);
-    const ceiling = clouds.find(isCeiling)?.height || Infinity;
-    if (ceiling < 500 || visibilitySM < 1) {
-        return "LIFR";
-    } else if (ceiling < 1000 || visibilitySM < 3) {
-        return "IFR";
-    } else if (ceiling < 3000 || visibilitySM < 5) {
-        return "MVFR";
+export function flightCategories(reference: DateTime, taf: ITAF, metars: IMetar[]) {
+    const metarIntervals = metarFlightCategories(reference, metars);
+    const lastMetar = _.last(metarIntervals);
+    const lastMetarEnd = lastMetar.interval.end;
+    const tafIntervals = tafFlightCategories(reference, taf);
+    const cutover = _.findIndex(tafIntervals, ({interval: {end}}) => end > lastMetarEnd);
+    if (-1 !== cutover) {
+        tafIntervals.splice(0, cutover);
+        const [firstTaf] = tafIntervals;
+        if (firstTaf.category === lastMetar.category) {
+            lastMetar.interval = lastMetar.interval.start.until(firstTaf.interval.end);
+            tafIntervals.splice(0, 1);
+        }
     }
-    return "VFR";
+    return [...metarIntervals, ...tafIntervals].filter(isNotEmptyInterval);
 }
 
 /**
@@ -35,17 +43,18 @@ export function metarFlightCategories(reference: DateTime, ...metars: Array<IMet
     return _.transform(_.sortBy(_.flatten(metars).map(entry =>
             [entry, resolveDayTime(reference, entry.day, entry.hour, entry.minute)] as const), 1),
         (acc, [entry, time]) => {
-            const category = flightCategory(entry.clouds, entry.visibility);
             const previous = _.last(acc);
-            if (category === previous?.category) {
+            if (null != previous) {
                 previous.interval = previous.interval.start.until(time);
-            } else {
+            }
+            const category = flightCategory(entry.clouds, entry.visibility);
+            if (category !== previous?.category) {
                 acc.push({
                     interval: time.until(time),
                     category
                 });
             }
-        }, new Array<FlightCategoryInterval>());
+        }, new Array<FlightCategoryInterval>()).filter(isNotEmptyInterval);
 }
 
 /**
@@ -61,7 +70,7 @@ export function tafFlightCategories(reference: DateTime, taf: ITAF) {
     const {clouds, trends, validity: {endDay, endHour, startDay, startHour}, visibility} = taf;
     const category = flightCategory(clouds, visibility);
     const interval = resolveDayTime(reference, startDay, startHour).until(resolveDayTime(reference, endDay, endHour));
-    return _.transform(taf.trends, (acc, trend) => {
+    return _.transform(trends, (acc, trend) => {
         const category = flightCategory(trend.clouds, trend.visibility);
         const previous = _.last(acc);
         if (category !== previous?.category) {
@@ -84,7 +93,26 @@ export function tafFlightCategories(reference: DateTime, taf: ITAF) {
             }
             previous.interval = previous.interval.start.until(start);
         }
-    }, new Array<FlightCategoryInterval>({category, interval}));
+    }, new Array<FlightCategoryInterval>({category, interval})).filter(isNotEmptyInterval);
+}
+
+/**
+ * Determine the US/FAA flight category which corresponds to a given array of cloud layers and visibility.
+ *
+ * @param clouds the cloud layers.
+ * @param visibility the visibility.
+ */
+function flightCategory(clouds: ICloud[], visibility: Distance) {
+    const visibilitySM = visibility.value * ("SM" === visibility.unit ? 1 : 1609.34);
+    const ceiling = clouds.find(isCeiling)?.height || Infinity;
+    if (ceiling < 500 || visibilitySM < 1) {
+        return "LIFR";
+    } else if (ceiling < 1000 || visibilitySM < 3) {
+        return "IFR";
+    } else if (ceiling < 3000 || visibilitySM < 5) {
+        return "MVFR";
+    }
+    return "VFR";
 }
 
 /**
@@ -94,6 +122,10 @@ export function tafFlightCategories(reference: DateTime, taf: ITAF) {
  */
 function isCeiling({quantity}: ICloud) {
     return "BKN" === quantity || "OVC" === quantity;
+}
+
+function isNotEmptyInterval({interval}: FlightCategoryInterval) {
+    return interval.length() > 0;
 }
 
 /**
