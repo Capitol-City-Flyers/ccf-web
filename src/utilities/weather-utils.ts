@@ -9,6 +9,9 @@ import {resolveDayTime} from "./date-utils";
  * TAF-derived from overlapping intervals of time. Metar data is used until the end of the Metar data, then the TAF data
  * is used for the remainder of the period.
  *
+ * Note that there is no guarantee that the returned intervals will be continuous; if there is a gap between the metar
+ * and TAF data, there will be a corresponding gap in the output.
+ *
  * @param reference the reference date/time for interpreting day/time values.
  * @param taf the TAF.
  * @param metars the Metar(s).
@@ -20,19 +23,27 @@ export function flightCategories(reference: DateTime, taf: ITAF, metars: IMetar[
     const lastMetar = _.last(metarIntervals);
     const metarEnd = lastMetar.interval.end;
     const tafIntervals = tafFlightCategories(reference, taf);
-    const tafSplit = _.findIndex(tafIntervals, ({interval: {end}}) => end > metarEnd);
+    const tafSplit = _.findIndex(tafIntervals, ({interval: {end}}) => end >= metarEnd);
     if (-1 !== tafSplit) {
 
-        /* Remove TAFs which end before the last metar. Set transition depending upon whether category changed. */
+        /* Remove TAF interval(s) that end before the last metar. */
         tafIntervals.splice(0, tafSplit);
         const [firstTaf] = tafIntervals;
-        if (firstTaf.category === lastMetar.category) {
-            lastMetar.interval = lastMetar.interval.start.until(firstTaf.interval.end);
-            tafIntervals.splice(0, 1);
-        } else {
-            firstTaf.interval = lastMetar.interval.end.until(firstTaf.interval.end);
-            if (0 === lastMetar.interval.length()) {
-                metarIntervals.splice(metarIntervals.length - 1, 1);
+        if (firstTaf.interval.start <= lastMetar.interval.end) {
+
+            /* Last metar interval and first TAF interval overlap or abut. */
+            if (firstTaf.category === lastMetar.category) {
+
+                /* Same category, merge into one interval. */
+                lastMetar.interval = lastMetar.interval.start.until(firstTaf.interval.end);
+                tafIntervals.splice(0, 1);
+            } else {
+
+                /* Different categories, split, remove the last metar if its length is zero. */
+                firstTaf.interval = lastMetar.interval.end.until(firstTaf.interval.end);
+                if (0 === lastMetar.interval.length()) {
+                    metarIntervals.splice(metarIntervals.length - 1, 1);
+                }
             }
         }
     }
@@ -90,30 +101,50 @@ export function tafFlightCategories(reference: DateTime, taf: ITAF) {
     const {clouds, trends, validity: {endDay, endHour, startDay, startHour}, visibility} = taf;
     const category = flightCategory(clouds, visibility);
     const interval = resolveDayTime(reference, startDay, startHour).until(resolveDayTime(reference, endDay, endHour));
+    let baseClouds = clouds;
+    let baseVisibility = visibility;
     return _.transform(trends, (acc, trend) => {
+
+        /* Get clouds and visibility, possibly inheriting from preceding persistent trend. */
+        const haveTrendClouds = !_.isEmpty(trend.clouds);
+        const haveTrendVisibility = null != trend.visibility;
+        const trendClouds = haveTrendClouds ? trend.clouds : baseClouds;
+        const trendVisibility = haveTrendVisibility ? trend.visibility : baseVisibility;
+
+        /* Get effective flight category, determine whether it has changed since previous trend. */
         const previous = _.last(acc);
-        const category = flightCategory(trend.clouds, trend.visibility);
+        const category = flightCategory(trendClouds, trendVisibility);
         if (category !== previous?.category) {
             const {validity} = trend;
             const start = resolveDayTime(reference, validity.startDay, validity.startHour, validity.startMinutes);
             if (!("endDay" in validity)) {
                 acc.push({
-                    interval: start.until(previous.interval.end),
-                    category
+                    category,
+                    interval: start.until(previous.interval.end)
                 });
             } else {
                 const end = resolveDayTime(reference, validity.endDay, validity.endHour);
                 acc.push({
-                    interval: start.until(end),
-                    category
+                    category,
+                    interval: start.until(end)
                 }, {
-                    interval: end.until(previous.interval.end),
-                    category: previous.category
+                    category: previous.category,
+                    interval: end.until(previous.interval.end)
                 });
             }
             previous.interval = previous.interval.start.until(start);
         }
-    }, new Array<FlightCategoryInterval>({category, interval})).filter(isNotEmptyInterval);
+
+        /* Update base clouds and/or visibility for persistent trends. */
+        if ("FM" === trend.type || "BECMG" === trend.type) {
+            if (haveTrendClouds) {
+                baseClouds = trend.clouds;
+            }
+            if (haveTrendVisibility) {
+                baseVisibility = trend.visibility;
+            }
+        }
+    }, new Array<FlightCategoryInterval>({category, interval}));
 }
 
 /**
