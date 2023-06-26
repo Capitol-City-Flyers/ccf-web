@@ -9,7 +9,7 @@ import {
     toFractions,
     toLengthFractions,
     toTransitions,
-    truncate
+    truncate, resolveDayTime
 } from "../../src/utilities/date-utils";
 
 describe("DateUtils", () => {
@@ -72,6 +72,29 @@ describe("DateUtils", () => {
         expect(now.zoneName).toBe("UTC");
         expect(now.diff(beforeOrSame).toMillis()).toBeGreaterThanOrEqual(0);
         expect(now.diff(afterOrSame).toMillis()).toBeLessThanOrEqual(0);
+    });
+    describe("resolveDayTime()", () => {
+        const reference = DateTime.fromISO("2023-06-25T12:34:56.789Z", {setZone: true});
+        test("24th hour", () => {
+            expect(resolveDayTime(reference, 25, 24))
+                .toStrictEqual(DateTime.fromISO("2023-06-26T00:00:00.000Z", {setZone: true}));
+        });
+        test("Next day", () => {
+            expect(resolveDayTime(reference, 26, 0))
+                .toStrictEqual(DateTime.fromISO("2023-06-26T00:00:00.000Z", {setZone: true}));
+        });
+        test("Next month", () => {
+            expect(resolveDayTime(reference, 1, 0))
+                .toStrictEqual(DateTime.fromISO("2023-07-01T00:00:00.000Z", {setZone: true}));
+        });
+        test("Same day", () => {
+            expect(resolveDayTime(reference, 25, 14))
+                .toStrictEqual(DateTime.fromISO("2023-06-25T14:00:00.000Z", {setZone: true}));
+        });
+        test("With minute", () => {
+            expect(resolveDayTime(reference, 25, 14, 30))
+                .toStrictEqual(DateTime.fromISO("2023-06-25T14:30:00.000Z", {setZone: true}));
+        });
     });
     describe("toTransitions()", () => {
         test("For an empty interval array", () => {

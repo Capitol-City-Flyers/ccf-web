@@ -153,6 +153,32 @@ export function nowUTC() {
 }
 
 /**
+ * Resolve a METAR- or TAF-style day/hour value against a given reference date/time.
+ *
+ * @param reference the reference date/time.
+ * @param day the day of month.
+ * @param hour the hour of day `[0..24]`, with 24 being midnight of the following day.
+ */
+export function resolveDayTime(reference: DateTime, day: number, hour: number, minute: number = 0) {
+    let resolvedDate = reference.setZone("UTC");
+    if (day !== resolvedDate.day) {
+        const previousDay = resolvedDate.minus({days: 1});
+        if (day === previousDay.day) {
+            resolvedDate = previousDay;
+        } else if (day > resolvedDate.day) {
+            resolvedDate = resolvedDate.set({day});
+        } else {
+            resolvedDate = resolvedDate.plus({months: 1}).set({day});
+        }
+    }
+    return resolvedDate.set({
+        millisecond: 0,
+        second: 0,
+        hour, minute
+    });
+}
+
+/**
  * Given a bounding interval and an array of zero or more date/times *within* that interval, return an array of numbers
  * representing the fractional (`[0..1]`) time within the bounding interval. In other words, if a date/time is equal to
  * the start of the bounding interval, `0` is returned as the corresponding fraction; if it is equal to the end of the
