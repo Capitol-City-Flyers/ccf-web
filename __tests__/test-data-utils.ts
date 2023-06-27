@@ -1,6 +1,6 @@
-import path, {ParsedPath} from "path";
-import fs from "fs";
-import crypto from "crypto";
+import * as path from "path";
+import * as fs from "fs";
+import * as crypto from "crypto";
 import {glob} from "glob";
 import {Readable} from "stream";
 import {createBrotliDecompress} from "zlib";
@@ -156,7 +156,7 @@ export async function readResources(relative: string) {
     const pattern = path.resolve(__dirname, "./", relative),
         matches = await glob(pattern.replace(/\\/g, "/"));
     return Promise.all(matches.map(match =>
-        new Promise<[ParsedPath, Buffer]>((resolve, reject) => {
+        new Promise<[path.ParsedPath, Buffer]>((resolve, reject) => {
 
             /* Get the file size. */
             const parsedPath = path.parse(match);
@@ -200,7 +200,7 @@ export async function readUtf8TextResources(relative: string) {
     const pattern = path.resolve(__dirname, "./", relative),
         matches = await glob(pattern.replace(/\\/g, "/"));
     return Promise.all(matches.map(match =>
-        new Promise<[ParsedPath, string]>((resolve, reject) => {
+        new Promise<[path.ParsedPath, string]>((resolve, reject) => {
 
             /* Open a stream on the match. Pipe through a decompressor if necessary. */
             let input: Readable = fs.createReadStream(match);

@@ -5,6 +5,9 @@ describe("array-utils.ts", () => {
         test("for a single value", () => {
             expect(flattenValues("value1")).toStrictEqual(["value1"]);
         });
+        test("for a multiple values", () => {
+            expect(flattenValues("value1", "value2")).toStrictEqual(["value1", "value2"]);
+        });
         test("for a single array with a single value", () => {
             expect(flattenValues(["value1"])).toStrictEqual(["value1"]);
         });

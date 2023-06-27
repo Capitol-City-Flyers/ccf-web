@@ -1,0 +1,458 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- saved from url=(0098)https://www.aviationweather.gov/metar/data?ids=KMSN+KC29+K91C+KC35&format=raw&date=&hours=6&taf=on -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--[if lt IE 9]>
+<meta http-equiv="X-UA-Compatible" content="IE=8" />
+<![endif]-->
+<title>AWC - METeorological Aerodrome Reports (METARs)</title>
+
+<meta http-equiv="Refresh" content="900">
+<meta name="DC.language" content="en-us" scheme="DCTERMS.RFC1766">
+<meta name="description" content="Aviation Weather Center Homepage provides comprehensive user-friendly aviation weather Text products and graphics.">
+<meta name="keywords" content="aviation, weather, icing, turbulence, convection, pirep, metar, taf, airmet, sigmet, satellite, radar, surface, wind, temperature, aloft, airplane, NEXRAD, GOES, WSR-88D, precipitation, rain, snow, sleet, thunderstorm, en-route, prognosis, chart">
+<meta name="DC.title" content="AWC - Aviation Weather Center">
+<meta name="DC.description" content="Aviation Weather Center Home Page ... METARs Page">
+<meta name="DC.creator" content="NOAA&#39;s National Weather Service - Aviation Weather Center Homepage">
+<meta name="DC.date.created" content="2013-03-15" scheme="ISO8601">
+<meta name="DC.date.reviewed" content="2013-03-15" scheme="ISO8601">
+
+<link href="./aviationweather-metars_files/jquery-ui.css" media="screen" rel="stylesheet" type="text/css">
+<link href="https://www.aviationweather.gov/images/favicon.ico" rel="shortcut icon">
+<link href="https://www.aviationweather.gov/images/noaa_logo.png" rel="apple-touch-icon">
+<link href="./aviationweather-metars_files/layout.css" media="" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="./aviationweather-metars_files/jquery-3.5.1.js.download"></script>
+<script type="text/javascript" src="./aviationweather-metars_files/jquery-ui.js.download"></script>
+<script type="text/javascript" src="./aviationweather-metars_files/search_auto_comp.js.download"></script>
+<script type="text/javascript" src="./aviationweather-metars_files/trax.js.download"></script>
+<script type="text/javascript" async="true" id="_fed_an_ua_tag" src="./aviationweather-metars_files/Universal-Federated-Analytics-Min.js.download"></script>
+</head>
+<body>
+<script>
+$(function(){
+    $(document).on('click', '#maximize', function(){
+        $('#user_name').css('top','41px');
+        if('800px' !== $('#map').css('width')) {
+            $('#user_name').css('top','4px');
+        }
+    });
+});
+</script>
+<div id="awc_pagewrapper">
+<!--
+=========================================================================
+   Top header, banner text
+=========================================================================
+-->
+<div id="awc_head">
+<div id="awc_header">
+  <div class="awc_headerarea">
+    <div class="awc_headerleft">
+      <a href="https://www.noaa.gov/" title="Visit the NOAA website"><img src="./aviationweather-metars_files/noaa_logo.png" border="0" alt="NOAA Logo"></a>
+      <a href="https://www.weather.gov/" title="Visit the NWS website"><img src="./aviationweather-metars_files/nws_logo.png" border="0" alt="NWS Logo"></a>
+    </div> <!-- /awc_headerleft -->
+    <div class="awc_headertext">
+      <h1><a href="https://www.aviationweather.gov/">AVIATION WEATHER CENTER</a><span style="font-size:14px;color:#555"></span></h1>
+      <h2><a href="https://www.noaa.gov/">N O A A</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="https://www.weather.gov/">N A T I O N A L &nbsp;&nbsp;W E A T H E R &nbsp;&nbsp;S E R V I C E</a>
+      </h2>
+          </div> <!-- awc_headertext -->
+    <a href="https://www.commerce.gov/">
+    <div class="awc_headerright" title="Visit Department of Commerce website">
+    </div> <!-- /awc_headerright -->
+    </a>
+  </div> <!-- /awc_headerarea -->
+</div> <!-- /awc_header -->
+<!-- Header shadow -->
+<div id="awc_header_shadow">
+  <div id="awc_header_shadow_content"> </div>
+</div>
+<!--
+=========================================================================
+    AWC Top Navigation Menu
+=========================================================================
+-->
+<div id="awc_topnav">
+  <!-- Forecastsearch -->
+  <div id="awc_menu">
+  <ul>
+    <li style="float: left; top: -5px; padding-left: 0">
+      <!-- Forecastsearch -->
+      <div class="" id="fcst-search" style="float:left; width: 165px; margin: 1px 0 1px 0">
+        <form name="getForecast" id="getForecast" class="form-inline" role="form" action="https://forecast.weather.gov/zipcity.php" method="get">
+          <div id="getfcst-body">
+            <input name="inputstring" type="text" placeholder="Local Forecast" class="input_text" id="inputstring" title="Enter City and State, or Zip Code, then click Go" style="width: 110px; !important" autocomplete="off">
+            <input name="btnSearch" id="btnSearch" class="input_button" type="submit" value="Go" style="font-size: 12px">
+          </div>
+        </form>
+      </div>
+      <!-- /Forecastsearch -->
+        </li>
+    <!-- /Forecastsearch -->
+    <li class="awc_link" onclick="" aria-haspopup="true"><span>HOME</span>
+      <ul aria-haspopup="false">
+        <li class="awc_link"><a href="https://www.aviationweather.gov/">AWC Home</a></li>
+        <li class="awc_link" aria-haspopup="true" onclick=""><span>NCEP &gt;</span>
+          <ul aria-haspopup="false">
+            <li class="awc_link"><a href="https://www.ncep.noaa.gov/">NCEP Home</a></li>
+            <li class="awc_link"><a href="https://www.aviationweather.gov/">Aviation (AWC)</a></li>
+            <li class="awc_link"><a href="https://www.cpc.ncep.noaa.gov/">Climate (CPC)</a></li>
+            <li class="awc_link"><a href="https://www.nhc.noaa.gov/">Hurricane (NHC)</a></li>
+            <li class="awc_link"><a href="https://www.emc.ncep.noaa.gov/">Modeling (EMC)</a></li>
+            <li class="awc_link"><a href="https://ocean.weather.gov/">Ocean (OPC)</a></li>
+            <li class="awc_link"><a href="https://www.nco.ncep.noaa.gov/">Operations (NCO)</a></li>
+            <li class="awc_link"><a href="https://www.swpc.noaa.gov/">Space (SWPC)</a></li>
+            <li class="awc_link"><a href="https://www.spc.noaa.gov/">Storm (SPC)</a></li>
+            <li class="awc_link"><a href="https://www.wpc.ncep.noaa.gov/">Weather (WPC)</a></li>
+          </ul>
+        </li>
+        <li class="awc_link"><a href="https://www.weather.gov/">NWS Home</a></li>
+        <li class="awc_link"><a href="https://www.noaa.gov/">NOAA Home</a></li>
+      </ul>
+    </li>
+    <li class="awc_link" onclick="" aria-haspopup="true"><span>ADVISORIES</span>
+      <ul aria-haspopup="false">
+        <li class="awc_link"><a href="https://www.aviationweather.gov/sigmet">SIGMET</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/gairmet">G-AIRMET</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/cwamis">Center Weather</a></li>
+      </ul>
+    </li>
+    <li class="awc_link" onclick="" aria-haspopup="true"><span>FORECASTS</span>
+      <ul aria-haspopup="false">
+        <li class="awc_link"><a href="https://www.aviationweather.gov/convection">Convection</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/turbulence">Turbulence</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/icing">Icing</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/windtemp">Winds/Temps</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/progchart">Prog Charts</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/taf">TAFs</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/gfa/plot">Aviation Forecasts</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/wafs">WAFS Forecasts</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/areafcst">Area Forecasts</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/fcstdisc">Avn. Forecast Disc.</a></li>
+      </ul>
+    </li>
+    <li class="awc_link" onclick="" aria-haspopup="true"><span>OBSERVATIONS</span>
+      <ul aria-haspopup="false">
+        <li class="awc_link"><a href="https://www.aviationweather.gov/airep">Aircraft Reps</a> </li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/metar">METARs</a> </li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/radar">Radar</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/satellite">Satellite</a></li>
+      </ul>
+    </li>
+    <li class="awc_link" onclick="" aria-haspopup="true"><span>TOOLS</span>
+      <ul aria-haspopup="false">
+        <li class="awc_link"><a href="https://www.aviationweather.gov/flightpath">Flight Path Tool</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/gfa">GFA Tool</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/hemst">HEMS Tool</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/dataserver">Text Data Server</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/flightfolder">Flight Folder</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/decisionsupport">Decision Support</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/pirep/submit">PIREP Submit</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/briefing">Standard Briefing</a></li>
+        <li class="awc_link"><a href="https://testbed.aviationweather.gov/">Aviation Testbed</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/info/links">Aviation Links</a></li>
+      </ul>
+    </li>
+        <li class="awc_link" onclick="" aria-haspopup="true"><span style="color: red">NEWS</span>
+      <ul aria-haspopup="false">
+        <li class="awc_link"><a href="https://www.aviationweather.gov/news">AWC News</a></li>
+        <li class="awc_link"><a href="https://www.facebook.com/US.NOAA.AviationWeatherCenter">Facebook</a></li>
+        <li class="awc_link"><a href="https://www.twitter.com/NWSAWC">Twitter</a></li>
+        <li class="awc_link"><a href="https://www.weather.gov/news/">NWS News</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/news/front">The Front</a></li>
+      </ul>
+    </li>
+    <li class="awc_link" onclick="" aria-haspopup="true"><span>SEARCH</span>
+      <ul aria-haspopup="false">
+        <li class="awc_link">
+          <form method="get" action="https://search.usa.gov/search">
+          <input type="hidden" name="v:project" value="firstgov">
+          <label for="query" style="color: #104070; font-size:14px">Search For</label><br>
+          <input type="text" class="input_text" name="query" id="query" size="12">
+          <input type="submit" class="input_button" style="font-size:12px" value="Go">
+          <br>
+          <input type="radio" name="affiliate" checked="checked" value="nws.noaa.gov" id="nws">
+          <label for="nws" class="search-scope">NWS</label>
+          <input type="radio" name="affiliate" value="noaa.gov" id="noaa">
+          <label for="noaa" class="search-scope">All NOAA</label>
+          </form>
+        </li>
+      </ul>
+    </li>
+    <li class="awc_link" onclick="" aria-haspopup="true"><span>ABOUT</span>
+      <ul aria-haspopup="false">
+        <li class="awc_link"><a href="https://www.aviationweather.gov/info">AWC</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/help">Help</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/info/faq">FAQ</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/contact">Contact Us</a></li>
+      </ul>
+    </li>
+    <li class="awc_link" onclick="" aria-haspopup="true"><span>USER</span>
+    <ul aria-haspopup="false">
+            <li class="awc_link"><a href="https://www.aviationweather.gov/user/login">Login</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/user/settings">Settings</a></li>
+        <li class="awc_link"><a href="https://www.aviationweather.gov/user/register">Register</a></li>
+    
+    </ul>
+    </li>
+  </ul>
+  <div style="float: right">
+    <a href="https://www.facebook.com/US.NOAA.AviationWeatherCenter"><img src="./aviationweather-metars_files/fb-art-25.png" alt="Facebook icon" title="Follow us on Facebook" height="20"></a>
+    <a href="https://www.twitter.com/NWSAWC"><img src="./aviationweather-metars_files/twitter-art-25.png" alt="Twitter icon" title="Follow us on Twitter" height="20"></a>
+  </div>
+  </div> <!-- awc_menu -->
+</div> <!-- /awc_topnav -->
+</div> <!-- /awc_head -->
+<!--
+=========================================================================
+    Main content
+=========================================================================
+-->
+<div id="awc_main">
+<div id="awc_main_content">
+
+<script type="text/javascript">
+  function goto(format,hours, taf, layout){
+    var id_elem = document.getElementById("ids");
+    var url = "/metar/data?ids="+id_elem.value+"&format="+format+"&hours="+hours+"&taf="+taf+"&layout="+layout;
+    window.location = url;
+  }
+</script>
+<div id="title">METAR Data<div id="title_linkbar">
+<div class="title_link"><a href="https://www.aviationweather.gov/metar?date=" title="METAR Home">METAR Home</a></div>
+<div class="title_link"><a href="https://www.aviationweather.gov/metar/plot?date=" title="METAR Plots">Plot</a></div>
+<div class="title_link on_page">Data</div>
+<div class="title_link"><a href="https://www.aviationweather.gov/metar/board?date=" title="METAR Board">Board</a></div>
+<div class="title_link"><a href="https://www.aviationweather.gov/metar/help?page=text&amp;date=" title="METAR Information">Info</a></div>
+</div>
+</div>
+<div id="awc_main_content_wrap">
+    <div id="app_menu" style="height: 30px;">
+  <form name="textForm" method="GET" action="https://www.aviationweather.gov/metar/data">
+     <div style="float: left" class="app_text">
+     IDs:<input size="14" id="ids" class="input_text" name="ids" type="search" title="Enter one or more 4-letter ICAO station identifier(s) separated by a comma. Hit enter to submit." value="KMSN KC29 K91C KC35">
+     Format: <input type="radio" name="format" id="formraw" value="raw" onclick="goto(&#39;raw&#39;,6, &#39;on&#39;, &#39;on&#39; )">Raw 
+     <input type="radio" name="format" id="formdec" value="decoded" onclick="goto(&#39;decoded&#39;,6, &#39;on&#39;, &#39;on&#39;)">Decoded
+      <script type="text/javascript">
+                  var e = document.getElementById("formraw");
+          e.checked = true;
+              </script>
+      <input type="hidden" name="date" value="">
+      <select id="hours" class="input_select" name="hours" onchange="goto(&#39;raw&#39;,this.options[this.selectedIndex].value, &#39;on&#39;, &#39;on&#39;)">
+            <option value="0" selected="">most recent only</option>
+            <option value="1">past 1 hours</option>
+            <option value="2">past 2 hours</option>
+            <option value="3">past 3 hours</option>
+            <option value="4">past 4 hours</option>
+            <option value="5">past 5 hours</option>
+            <option value="6">past 6 hours</option>
+            <option value="12">past 12 hours</option>
+            <option value="18">past 18 hours</option>
+            <option value="24">past 24 hours</option>
+            <option value="36">past 36 hours</option>
+            <option value="48">past 48 hours</option>
+            <option value="72">past 72 hours</option>
+            <option value="96">past 96 hours</option>
+            <option value="120">past 120 hours</option>
+      </select>
+      <script type="text/javascript">
+          var e = document.getElementById("hours");
+          for( var i = 0; i < e.options.length; i++ )
+              if( e.options[i].value == 6 )
+                  e.selectedIndex = i;
+      </script>
+      <input type="checkbox" id="taf" name="taf" onchange="goto(&#39;raw&#39;, 6, this.checked?&#39;on&#39;:&#39;off&#39;, &#39;on&#39;);">Include TAF
+	  <input type="button" id="layout" class="input_button" name="layout" value="Print" onclick="goto(&#39;raw&#39;, 6, &#39;on&#39;, &#39;off&#39;)">
+	  <input type="submit" class="input_button" value="Update"></div>
+  </form>
+  <script type="text/javascript">
+              var e = document.getElementById("taf");
+        e.checked = true;
+        </script>
+</div>
+<p clear="both">
+<strong>Data at: 1357 UTC 27 Jun 2023</strong></p>
+<!-- Data starts here -->
+<code>KMSN 271353Z 35006KT 2 1/2SM FU OVC036 18/13 A2993 RMK AO2 SLP130 T01780128</code><br>
+<code>KMSN 271253Z 34008KT 2 1/2SM FU BKN036 16/12 A2991 RMK AO2 SLP127 T01610122</code><br>
+<code>KMSN 271234Z 33007KT 2 1/2SM FU BKN031 16/12 A2991 RMK AO2 T01560122</code><br>
+<code>KMSN 271153Z 35005KT 2 1/2SM FU BKN029 15/12 A2989 RMK AO2 SLP120 T01500117 10178 20150 53008</code><br>
+<code>KMSN 271145Z 34007KT 2 1/2SM FU BKN029 15/12 A2989 RMK AO2 T01500117</code><br>
+<code>KMSN 271053Z 34008KT 2 1/2SM FU OVC035 15/12 A2989 RMK AO2 SLP117 T01500117</code><br>
+<code>KMSN 271042Z AUTO 35007KT 2SM HZ OVC035 15/12 A2988 RMK AO2 T01500117</code><br>
+<code>KMSN 270953Z AUTO 33006KT 3SM HZ OVC030 15/12 A2987 RMK AO2 SLP112 T01500117</code><br>
+<code>KMSN 270853Z AUTO 34007KT 3SM HZ OVC027 16/12 A2985 RMK AO2 SLP104 T01560122 52005</code><br>
+<code>KMSN 270805Z AUTO 34010KT 3SM HZ BKN027 16/12 A2985 RMK AO2 T01610122</code><br>
+<br><code>KMSN 271124Z 2712/2812 34009KT 2SM FU OVC050 <br>&nbsp;&nbsp;FM271500 36009KT 2SM FU BKN100 <br>&nbsp;&nbsp;FM272100 02008KT 5SM FU SCT100 <br>&nbsp;&nbsp;FM280000 07005KT 6SM FU SCT100 <br>&nbsp;&nbsp;FM280400 14006KT P6SM SCT100</code><br>
+<hr width="65%">
+<code>KC29 271355Z AUTO 35007KT 4SM OVC032 18/13 A2994 RMK AO1 T01840131</code><br>
+<code>KC29 271335Z AUTO 31005KT 4SM OVC032 18/13 A2994 RMK AO1 T01770134</code><br>
+<code>KC29 271315Z AUTO 32004KT 4SM SCT029 OVC036 17/13 A2993 RMK AO1 T01720133</code><br>
+<code>KC29 271255Z AUTO 31003KT 4SM BKN040 OVC045 17/13 A2993 RMK AO1 T01650133</code><br>
+<code>KC29 271235Z AUTO 31004KT 4SM SCT029 OVC038 16/13 A2993 RMK AO1 T01600132</code><br>
+<code>KC29 271215Z AUTO 29004KT 3SM SCT029 OVC037 16/13 A2993 RMK AO1 T01590133</code><br>
+<code>KC29 271155Z AUTO 30004KT 3SM BKN029 OVC037 15/13 A2992 RMK AO1 T01520130 10185 20146</code><br>
+<code>KC29 271135Z AUTO 29004KT 3SM OVC033 15/13 A2991 RMK AO1 T01500128</code><br>
+<code>KC29 271115Z AUTO 32003KT 3SM OVC033 15/13 A2991 RMK AO1 T01480126</code><br>
+<code>KC29 271055Z AUTO 31005KT 3SM OVC033 15/13 A2991 RMK AO1 T01470125</code><br>
+<code>KC29 271035Z AUTO 31004KT 3SM OVC033 15/13 A2990 RMK AO1 T01470125</code><br>
+<code>KC29 271015Z AUTO 31004KT 5SM OVC029 15/13 A2990 RMK AO1 T01470125</code><br>
+<code>KC29 270955Z AUTO 29005KT 5SM OVC029 15/12 A2989 RMK AO1 T01480123</code><br>
+<code>KC29 270935Z AUTO 28004KT 5SM OVC027 15/12 A2988 RMK AO1 T01510124</code><br>
+<code>KC29 270915Z AUTO 31005KT 5SM OVC027 16/13 A2988 RMK AO1 T01560125</code><br>
+<code>KC29 270855Z AUTO 33004KT 5SM OVC027 16/13 A2987 RMK AO1 T01570126</code><br>
+<code>KC29 270835Z AUTO 34004KT 5SM BKN027 16/13 A2987 RMK AO1 T01610126</code><br>
+<code>KC29 270815Z AUTO 34005KT 5SM CLR 16/13 A2987 RMK AO1 T01630126</code><br>
+<strong>No TAF found for KC29</strong><br><hr width="65%">
+<strong>No METAR found for K91C</strong><br><strong>No TAF found for K91C</strong><br><hr width="65%">
+<code>KC35 271355Z AUTO 01005KT 4SM OVC033 18/13 A2994 RMK AO2 T01750125 PWINO</code><br>
+<code>KC35 271335Z AUTO 04004KT 4SM SCT026 OVC033 17/13 A2994 RMK AO2 T01690125 PWINO</code><br>
+<code>KC35 271315Z AUTO 02003KT 4SM SCT027 OVC033 16/12 A2993 RMK AO2 T01580123 PWINO</code><br>
+<code>KC35 271255Z AUTO 00000KT 4SM OVC032 15/12 A2994 RMK AO2 T01490121 PWINO</code><br>
+<code>KC35 271235Z AUTO 31003KT 4SM OVC035 14/12 A2994 RMK AO2 T01440119 PWINO</code><br>
+<code>KC35 271215Z AUTO 30003KT 4SM OVC037 14/12 A2994 RMK AO2 T01400116 PWINO</code><br>
+<code>KC35 271155Z AUTO 29006KT 4SM OVC035 14/12 A2993 RMK AO2 T01390115 10170 20133 PWINO</code><br>
+<code>KC35 271135Z AUTO 30004KT 4SM OVC033 14/12 A2992 RMK AO2 T01350116 PWINO</code><br>
+<code>KC35 271115Z AUTO 30003KT 4SM OVC031 13/11 A2992 RMK AO2 T01330114 PWINO</code><br>
+<code>KC35 271055Z AUTO 33005KT 4SM OVC033 14/11 A2991 RMK AO2 T01380113 PWINO</code><br>
+<code>KC35 271035Z AUTO 34005KT 4SM OVC035 14/11 A2991 RMK AO2 T01390113 PWINO</code><br>
+<code>KC35 271015Z AUTO 32004KT 5SM OVC037 14/12 A2992 RMK AO2 T01400115 PWINO</code><br>
+<code>KC35 270955Z AUTO 32004KT 5SM OVC035 14/11 A2991 RMK AO2 T01420114 PWINO</code><br>
+<code>KC35 270935Z AUTO 32006KT 5SM OVC033 15/12 A2990 RMK AO2 T01450115 PWINO</code><br>
+<code>KC35 270915Z AUTO 33005KT 5SM OVC029 15/12 A2989 RMK AO2 T01460115 PWINO</code><br>
+<code>KC35 270855Z AUTO 33007KT 5SM BKN029 15/12 A2989 RMK AO2 T01490115 PWINO</code><br>
+<code>KC35 270835Z AUTO 33007KT 5SM BKN029 15/12 A2988 RMK AO2 T01510116 PWINO</code><br>
+<code>KC35 270815Z AUTO 34007KT 5SM CLR 15/12 A2988 RMK AO2 T01530115 PWINO</code><br>
+<strong>No TAF found for KC35</strong><br><hr width="65%">
+<!-- Data ends here -->
+<p></p>
+</div>
+<br style="clear:both;">
+
+</div> <!-- /awc_main_content -->
+</div> <!-- /awc_main -->
+
+<!--
+=========================================================================
+    Bottomo Nav content
+=========================================================================
+-->
+<div id="awc_botnav">
+  <div id="awc_botnav_content">
+  <p style="text-align: center; font-size: 10px; color: #1150a0">
+    Page loaded:&nbsp;
+  <a href="https://www.time.gov/">13:57 UTC</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+  06:57 AM  Pacific&nbsp;&nbsp;|&nbsp;&nbsp;
+  07:57 AM  Mountain&nbsp;&nbsp;|&nbsp;&nbsp;
+  08:57 AM  Central&nbsp;&nbsp;|&nbsp;&nbsp;
+  09:57 AM  Eastern
+  </p>
+  <div style="display: table-row">
+    <div style="display: table-cell; width: 100px">&nbsp;</div>
+    <div style="display: table-cell; width: 200px">
+      <h1>ADVISORIES</h1>
+      <ul>
+        <li><a href="https://www.aviationweather.gov/sigmet">SIGMET</a></li>
+        <li><a href="https://www.aviationweather.gov/gairmet">G-AIRMET</a></li>
+        <li><a href="https://www.aviationweather.gov/cwamis">Center Weather</a></li>
+      </ul>
+      <h1>FORECASTS</h1>
+      <ul>
+        <li><a href="https://www.aviationweather.gov/convection">Convection</a></li>
+        <li><a href="https://www.aviationweather.gov/turbulence">Turbulence</a></li>
+      </ul>
+    </div>
+    <div style="display: table-cell; width: 200px">
+      <h1>FORECASTS</h1>
+      <ul>
+        <li><a href="https://www.aviationweather.gov/icing">Icing</a></li>
+        <li><a href="https://www.aviationweather.gov/windtemp">Winds/Temps</a></li>
+        <li><a href="https://www.aviationweather.gov/progchart">Prog Charts</a></li>
+        <li><a href="https://www.aviationweather.gov/taf">TAFs</a></li>
+        <li><a href="https://www.aviationweather.gov/gfa/plot">Aviation Forecasts</a></li>
+        <li><a href="https://www.aviationweather.gov/wafs">WAFS Forecasts</a></li>
+        <li><a href="https://www.aviationweather.gov/areafcst">Area Forecasts</a></li>
+        <li><a href="https://www.aviationweather.gov/fcstdisc">Avn Forecast Disc (AFD)</a></li>
+      </ul>
+    </div>
+    <div style="display: table-cell; width: 200px">
+      <h1>OBSERVATIONS</h1>
+      <ul>
+        <li><a href="https://www.aviationweather.gov/airep">Aircraft Reps</a></li>
+        <li><a href="https://www.aviationweather.gov/metar">METARs</a></li>
+        <li><a href="https://www.aviationweather.gov/radar">Radar</a></li>
+        <li><a href="https://www.aviationweather.gov/satellite">Satellite</a></li>
+      </ul>
+    </div>
+    <div style="display: table-cell; width: 200px">
+      <h1>USER TOOLS</h1>
+      <ul>
+        <li><a href="https://www.aviationweather.gov/flightpath">Flightpath Tool</a></li>
+        <li><a href="https://www.aviationweather.gov/hemst">HEMS Tool</a></li>
+        <li><a href="https://www.aviationweather.gov/dataserver">Text Data Server</a></li>
+        <li><a href="https://www.aviationweather.gov/flightfolder">Flight Folder</a></li>
+        <li><a href="https://www.aviationweather.gov/decisionsupport">Decision Support</a></li>
+        <li><a href="https://www.aviationweather.gov/pirep/submit">PIREP Submit</a></li>
+        <li><a href="https://www.aviationweather.gov/briefing">Standard Briefing</a></li>
+        <li><a href="http://testbed.aviationweather.gov/">Aviation Testbed</a></li>
+        <li><a href="https://www.aviationweather.gov/info/links">Aviation Links</a></li>
+      </ul>
+    </div>
+    <div style="display: table-cell; width: 200px">
+      <h1>ABOUT US</h1>
+      <ul>
+        <li><a href="https://www.aviationweather.gov/info">AWC</a></li>
+        <li><a href="https://www.aviationweather.gov/help">Help</a></li>
+        <li><a href="https://www.aviationweather.gov/info/faq/">FAQ</a></li>
+        <li><a href="https://www.aviationweather.gov/contact">Contact Us</a></li>
+      </ul>
+    </div>
+  </div> <!-- /table -->
+  </div> <!-- /awc_botnav_content -->
+</div> <!-- /awc_botnav -->
+
+<!--
+=========================================================================
+    Footer
+=========================================================================
+-->
+<div id="awc_footer">
+  <div id="awc_footer_content">
+
+  <div style="width:240px; float: left; text-align:left">
+    <a href="https://www.usa.gov/"><img src="./aviationweather-metars_files/usa_gov.png" alt="USA dot gov"></a>
+  </div>
+  <div style="width:260px; float: left; text-align:left">
+    <a href="https://www.commerce.gov/">US Dept of Commerce</a><br>
+    <a href="https://www.noaa.gov/">National Oceanic and Atmospheric Administration</a><br>
+    <a href="https://www.weather.gov/">National Weather Service</a><br>
+    <a href="https://www.ncep.noaa.gov/"><span class="gray">National Centers for Environmental Prediction</span></a><br>
+    <a href="https://www.aviationweather.gov/">Aviation Weather Center</a><br>
+    7220 NW 101st Terrace<br>
+    Kansas City, MO 64153-2371<br>
+  </div>
+  <div style="width:220px; float: left; text-align:left">
+    <a href="https://www.weather.gov/disclaimer">Disclaimer</a><br>
+    <a href="https://www.cio.noaa.gov/services_programs/info_quality.html">Information Quality</a><br>
+    <a href="https://www.weather.gov/glossary">Glossary</a><br>
+    <a href="https://www.aviationweather.gov/info">About Us</a><br>
+    <a href="https://www.aviationweather.gov/contact">Contact AWC</a><br>
+  </div>
+  <div style="width:240px; float: left; text-align:left">
+    <a href="https://www.weather.gov/privacy">Privacy Policy</a><br>
+    <a href="https://www.noaa.gov/foia-freedom-of-information-act">Freedom of Information Act (FOIA)</a><br>
+    <a href="https://www.weather.gov/careers">Career Opportunities</a><br>
+    Server:     IDP-CPRK:24 <br>
+    Version: v23.03<br>
+  </div>
+  </div> <!-- /awc_footer_content -->
+</div>  <!-- /awc_footer -->
+</div>  <!-- /awc_pagewrapper -->
+<script>
+  $(function() {
+          $('#logout').attr('href', '/user/logout?trax=' + logout);
+  });
+</script>
+
+
+
+<div class="autocomplete-suggestions" style="position: absolute; display: none; width: 400px; max-height: 300px; z-index: 9999;"></div></body></html>
