@@ -1,6 +1,7 @@
 package etc;
 
 import javax.crypto.Cipher;
+import javax.crypto.CipherOutputStream;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
@@ -10,9 +11,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.HexFormat;
+import java.util.Random;
+import java.util.regex.Pattern;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static javax.crypto.Cipher.DECRYPT_MODE;
@@ -54,7 +57,8 @@ public class TestEncryptionUtils {
     public static String decryptUTF8Hex(final String passphrase, final String inputHex) {
         try {
             final var output = new ByteArrayOutputStream(1024);
-            try (output; final var input = new ByteArrayInputStream(hex.parseHex(inputHex))) {
+            try (output; final var input = new ByteArrayInputStream(
+                    hex.parseHex(whitespace.matcher(inputHex).replaceAll("")))) {
                 decrypt(passphrase, input, output);
             }
             return output.toString(UTF_8);
@@ -76,10 +80,10 @@ public class TestEncryptionUtils {
             final OutputStream output) {
         try {
             final var iv = new byte[16];
-            SecureRandom.getInstanceStrong().nextBytes(iv);
+            random.nextBytes(iv);
             output.write(iv);
             cipher(passphrase, iv, ENCRYPT_MODE, input, output);
-        } catch (final GeneralSecurityException | IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -121,12 +125,13 @@ public class TestEncryptionUtils {
             final var key = new SecretKeySpec(factory.generateSecret(keySpec).getEncoded(), "AES");
             final var cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
             cipher.init(mode, key, new IvParameterSpec(iv));
-            final var buffer = new byte[1024];
-            var count = 0;
-            while (-1 != (count = input.read(buffer))) {
-                output.write(cipher.update(buffer, 0, count));
+            try (final var cipherOutput = new CipherOutputStream(output, cipher)) {
+                final var buffer = new byte[1024];
+                var count = 0;
+                while (-1 != (count = input.read(buffer))) {
+                    cipherOutput.write(buffer, 0, count);
+                }
             }
-            output.write(cipher.doFinal());
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
@@ -143,4 +148,22 @@ public class TestEncryptionUtils {
      * Hex codec.
      */
     private static final HexFormat hex = HexFormat.of();
+
+    /**
+     * Random number generator for encryption.
+     */
+    private static final Random random;
+
+    static {
+        try {
+            random = SecureRandom.getInstanceStrong();
+        } catch (final NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Pattern used to remove whitespace from hex encoded strings.
+     */
+    private static final Pattern whitespace = Pattern.compile("\\s+");
 }

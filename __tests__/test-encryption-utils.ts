@@ -24,7 +24,8 @@ export function decrypt(passphrase: string, encrypted: Buffer) {
  * @param inputHex the encrypted string.
  */
 export function decryptUTF8Hex(passphrase: string, inputHex: string) {
-    return decrypt(passphrase, Buffer.from(inputHex, "hex")).toString("utf8");
+    const input = Buffer.from(inputHex.replace(/\s+/g, ""), "hex");
+    return decrypt(passphrase, input).toString("utf8");
 }
 
 /**

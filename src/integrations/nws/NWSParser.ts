@@ -19,7 +19,7 @@ export class NWSParser {
     parseMetarResponse(root: ParentNode): MetarResponse {
 
         /* Find the beginning of the Metar/TAF data; parse the timestamp. */
-        const start = root.querySelector<HTMLParagraphElement>("p[clear=both] + code").previousElementSibling;
+        const start = root.querySelector<HTMLParagraphElement>("p[clear=both]");
         const timestampText = _.last(start.querySelector<HTMLElement>("strong").textContent.split("Data at: "));
         const timestamp = DateTime.fromFormat(_.trim(timestampText), "HHmm 'UTC' d MMM yyyy", {zone: "UTC"});
 

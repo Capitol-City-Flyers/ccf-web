@@ -30,6 +30,9 @@ module.exports = phase => {
             }, {
                 source: "/api/faa/nfdc/:path*",
                 destination: "https://nfdc.faa.gov/:path*"
+            }, {
+                source: "/api/aviationweather/:path*",
+                destination: "https://aviationweather.gov/:path*"
             }]
         });
     }

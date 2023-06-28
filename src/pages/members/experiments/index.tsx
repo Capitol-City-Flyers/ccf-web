@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import DailyAvailability from "../../../components/schedule/DailyAvailability";
 import DaySegmentsPanel from "../../../components/chrono/DaySegmentsPanel";
 import {DateTime} from "luxon";
+import FlightCategoryPanel from "../../../components/weather/FlightCategoryPanel";
 
 
 function PositionLabel() {
@@ -60,6 +61,9 @@ export default function MemberExperimentsPage() {
             <DaySegmentsPanel date={DateTime.now()} position={{latitude: 43.2869331, longitude: -89.7240116}}>
                 This is only a test
             </DaySegmentsPanel>
+            <FlightCategoryPanel station="KMSN">
+                This is only a test
+            </FlightCategoryPanel>
         </section>
     );
 }

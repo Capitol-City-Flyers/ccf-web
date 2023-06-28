@@ -33,7 +33,7 @@ export class NWSClient {
         const [first, ...additional] = stations;
         const originalIdentByNormalizedIdent = Object.fromEntries(flattenValues(first, ...additional)
             .map(station => [_.toUpper(3 === station.length ? `K${station}` : station), station] as const));
-        return axios.request({
+        return axios.request<string>({
             method: "get",
             url: "./metar/data",
             headers: new AxiosHeaders().setAccept("text/html").toJSON(),
@@ -44,7 +44,7 @@ export class NWSClient {
                 taf: "on",
                 hours
             },
-            responseType: "arraybuffer",
+            responseType: "text",
             validateStatus: status => 200 === status
         }).then(({data}) => {
 
