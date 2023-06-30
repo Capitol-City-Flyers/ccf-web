@@ -3,7 +3,7 @@ import {NWSClient} from "../../integrations/nws/NWSClient";
 import {useAxiosInstance} from "../../providers/axios/AxiosInstanceContext";
 import {DOM_PARSER} from "@capitol-city-flyers/ccf-web-integration";
 import {nowUTC} from "../../utilities/date-utils";
-import {flightCategories, FlightCategoryInterval} from "../../utilities/weather-utils";
+import {conditionIntervals, FlightCategoryInterval} from "../../utilities/weather-utils";
 import {parseMetar, parseTAF} from "metar-taf-parser";
 import {freeze} from "immer";
 import colors from "tailwindcss/colors";
@@ -27,7 +27,7 @@ export default function FlightCategoryPanel(props: PropsWithChildren<FlightCateg
         client.getMetarsAndTAFs(Math.floor(hours) + 1, station)
             .then(({stations: {[station]: {metars, taf}}}) => {
                 console.dir({metars, taf});
-                const categories = flightCategories(now, parseTAF(taf.join("\n")), metars.map(metar => parseMetar(metar)))
+                const categories = conditionIntervals(now, parseTAF(taf.join("\n")), metars.map(metar => parseMetar(metar)))
                     .filter(({interval}) => interval.overlaps(day));
                 setCategories(categories);
             });
