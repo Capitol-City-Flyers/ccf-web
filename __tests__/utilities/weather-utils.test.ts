@@ -17,15 +17,9 @@ describe("weather-utils.ts", () => {
             const categories = tafFlightCategories(reference, taf);
             expect(categories.map(({category, interval}) => ({category, interval: interval.toISO()})))
                 .toStrictEqual([{
-                    category: "vfr",
-                    interval: "2023-06-26T00:00:00.000Z/2023-06-26T00:00:00.000Z"
-                }, {
                     category: "mvfr",
-                    interval: "2023-06-26T00:00:00.000Z/2023-06-26T04:00:00.000Z"
-                }, {
-                    category: "vfr",
-                    interval: "2023-06-26T04:00:00.000Z/2023-06-26T04:00:00.000Z"
-                }, {category: "mvfr", "interval": "2023-06-26T04:00:00.000Z/2023-06-27T00:00:00.000Z"}]);
+                    interval: "2023-06-26T00:00:00.000Z/2023-06-27T00:00:00.000Z"
+                }]);
         });
         test("KOTH 2023-06-29", () => {
             const reference = DateTime.fromISO("2023-06-29T00:00:00.000Z", {setZone: true});

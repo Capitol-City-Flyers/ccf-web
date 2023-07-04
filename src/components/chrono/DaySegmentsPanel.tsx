@@ -2,13 +2,13 @@ import {PropsWithChildren, useMemo} from "react";
 import {freeze} from "immer";
 import _ from "lodash";
 import {DateTime, Interval} from "luxon";
-import colors from "tailwindcss/colors";
 import {GeoCoordinates} from "../../navigation/navigation-types";
 import {useDateCalc} from "../../providers/app/AppContext";
 import {useMessages} from "../../providers/messages/MessagesContext";
 import {toLengthFractions, truncate} from "../../utilities/date-utils";
 import {percent} from "../../utilities/math-utils";
 import {SolarIntervals} from "../../utilities/DateCalc";
+import PeriodSegmentsPanel, {SegmentComponentProps} from "./PeriodSegmentsPanel";
 
 /**
  * Properties for a {@link DaySegmentsPanel} component.
@@ -43,64 +43,38 @@ interface DaySegmentsPanelProps {
  * @constructor
  */
 export default function DaySegmentsPanel(props: PropsWithChildren<DaySegmentsPanelProps>) {
-    const {children, date, position} = props,
+    const {date, position} = props,
         dateCalc = useDateCalc(),
         messages = useMessages(),
-        segments = useMemo(() => {
+        segments = useMemo<SolarSegment[]>(() => {
             const dateTime = _.isString(date) ? DateTime.fromISO(date) : date,
                 baseSegments = solarSegments(dateCalc.solarIntervals(dateTime, position));
             return baseSegments.map((segment, index) => ({
                 tooltip: messages.resolve(
-                    segmentColorsAndTooltipKeys[index][1],
+                    segmentClassesAndTooltipKeys[index][1],
                     segment.interval.start.toLocaleString(DateTime.TIME_SIMPLE),
                     segment.interval.end.toLocaleString(DateTime.TIME_SIMPLE),
                     segment.interval.toLocaleString(DateTime.TIME_SIMPLE),
                     truncate(segment.interval.toDuration(), "minutes").toHuman()),
-                ...segment
+                ...segment,
+                index
             }));
-        }, [dateCalc, messages, position.latitude, position.longitude, _.isString(date) ? date : date.toMillis()]),
-        gradient = useMemo(() => daylightGradient(segments), [segments]);
+        }, [dateCalc, messages, position.latitude, position.longitude, _.isString(date) ? date : date.toMillis()]);
     return (
-        <div className="drop-shadow-md" style={{backgroundImage: gradient}}>
-            <div className="cursor-pointer h-3">
-                {segments.map(({tooltip, width}, index) => (
-                    <div key={`segment${index}`}
-                         className="border-2 border-transparent h-3 inline-block tooltip hover:border-yellow-200"
-                         style={{width: `${width}%`}}
-                         data-tip={tooltip}>
-                        &nbsp;
-                    </div>
-                ))}
-            </div>
-            <div className="border-2 border-transparent">
-                {children}
-            </div>
-            <div className="cursor-pointer h-3">
-                {segments.map(({tooltip, width}, index) => (
-                    <div key={`segment${index}`}
-                         className="border-2 border-transparent h-3 inline-block tooltip tooltip-bottom hover:border-yellow-200"
-                         style={{width: `${width}%`}}
-                         data-tip={tooltip}>
-                        &nbsp;
-                    </div>
-                ))}
-            </div>
-        </div>
+        <PeriodSegmentsPanel segments={segments} segmentComponent={DaySegment}/>
     );
 }
 
-/**
- * Generate the background gradient which indicates night, civil twilight, etc.
- *
- * @param spans the raw solar interval data.
- */
-function daylightGradient(spans: Array<SolarSegment>) {
-    const steps = spans.slice(1).reduce((acc, {start}, index) => {
-        const oldColor = segmentColorsAndTooltipKeys[index][0],
-            newColor = segmentColorsAndTooltipKeys[index + 1][0];
-        return `${acc}, ${oldColor} ${start}%, ${newColor} ${start}%`;
-    }, "");
-    return `linear-gradient(to right, ${segmentColorsAndTooltipKeys[0][0]} ${steps})`;
+export function DaySegment(props: SegmentComponentProps<SolarSegment>) {
+    const {segment} = props;
+    const {index} = segment;
+    return (
+        <div
+            className={`cursor-pointer inline-block min-w-full w-full tooltip ${segmentClassesAndTooltipKeys[index][0]}`}
+            data-tip={segment.tooltip}>
+            &nbsp;
+        </div>
+    );
 }
 
 /**
@@ -126,8 +100,7 @@ function solarSegments(intervals: SolarIntervals) {
         (acc, [interval, percent], index) => {
             acc.push({
                 interval: interval!,
-                start: 0 === index ? 0 : acc[index - 1].start + acc[index - 1].width,
-                width: percent!
+                index
             });
         }, new Array<Omit<SolarSegment, "tooltip">>());
 }
@@ -136,10 +109,9 @@ function solarSegments(intervals: SolarIntervals) {
  * Interval and its *start* and *width* within an interval span, expressed as percentages within a container.
  */
 interface SolarSegment {
+    index: number;
     interval: Interval;
-    start: number;
     tooltip: string;
-    width: number;
 }
 
 /**
@@ -152,12 +124,12 @@ interface SolarSegment {
  * * Hour after sunset
  * * PM night
  */
-const segmentColorsAndTooltipKeys = freeze([
-    [colors.slate[300], "cin.tooltip.solar-intervals.am-night"],
-    [colors.slate[200], "cin.tooltip.solar-intervals.hour-before-sunrise"],
-    [colors.slate[100], "cin.tooltip.solar-intervals.morning-civil-twilight"],
-    [colors.slate[50], "cin.tooltip.solar-intervals.daylight"],
-    [colors.slate[100], "cin.tooltip.solar-intervals.evening-civil-twilight"],
-    [colors.slate[200], "cin.tooltip.solar-intervals.hour-after-sunset"],
-    [colors.slate[300], "cin.tooltip.solar-intervals.pm-night"]
+const segmentClassesAndTooltipKeys = freeze([
+    ["bg-slate-300", "cin.tooltip.solar-intervals.am-night"],
+    ["bg-slate-200", "cin.tooltip.solar-intervals.hour-before-sunrise"],
+    ["bg-slate-100", "cin.tooltip.solar-intervals.morning-civil-twilight"],
+    ["bg-slate-50", "cin.tooltip.solar-intervals.daylight"],
+    ["bg-slate-100", "cin.tooltip.solar-intervals.evening-civil-twilight"],
+    ["bg-slate-200", "cin.tooltip.solar-intervals.hour-after-sunset"],
+    ["bg-slate-300", "cin.tooltip.solar-intervals.pm-night"]
 ]);

@@ -61,9 +61,13 @@ export default function MemberExperimentsPage() {
             <DaySegmentsPanel date={DateTime.now()} position={{latitude: 43.2869331, longitude: -89.7240116}}>
                 This is only a test
             </DaySegmentsPanel>
-            <FlightCategoryPanel station="KMSN">
-                This is only a test
-            </FlightCategoryPanel>
+            <div className="relative">
+                <div className="absolute left-0 top-0 w-full">
+                    <FlightCategoryPanel station="KEAU">
+                        This is only a test
+                    </FlightCategoryPanel>
+                </div>
+            </div>
         </section>
     );
 }

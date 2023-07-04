@@ -141,7 +141,7 @@ function conditionIntervals(period: Interval, intervals: IntervalWeather[]) {
                 ...(visibility && {visibility})
             }], ...succeeding);
         }
-    }, new Array<[Interval, FlightConditions]>());
+    }, new Array<[Interval, FlightConditions]>()).filter(([interval]) => 0 !== interval.length("milliseconds"));
 }
 
 /**
